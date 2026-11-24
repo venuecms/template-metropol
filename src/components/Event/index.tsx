@@ -141,7 +141,9 @@ export const Event = ({
                 props={{ sizes: "(min-width: 1024px) 66vw, 100vw" }}
               />
             ) : null}
-            <div className="grid gap-8 text-xs sm:grid-cols-3">
+            {/* Address and times side by side even on a phone: both are
+                short, and stacked they read as one long block. */}
+            <div className="grid grid-cols-2 gap-8 text-xs sm:grid-cols-3">
               {location ? (
                 <Detail>
                   <EventLocation location={location} />
