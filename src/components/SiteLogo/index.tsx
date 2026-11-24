@@ -30,8 +30,17 @@ export const SiteLogo = ({
     />
   ) : null;
 
+  // The link box is held to one line of nav text (`text-sm`: `--sm` at a 1.5
+  // line height), so the header is as tall as the nav whatever the Logo Scale.
+  // A larger logo overflows it, centred, into the header's padding instead of
+  // pushing the header taller; its width still takes up room in the row.
   return headerImage ? (
-    <Link href="/">{headerImage}</Link>
+    <Link
+      href="/"
+      className="flex h-[calc(var(--sm)*1.5)] shrink-0 items-center"
+    >
+      {headerImage}
+    </Link>
   ) : (
     <h1 className={cn("text-sm text-nav", className)}>
       <Link href="/">{name}</Link>
