@@ -13,6 +13,8 @@ import {
 } from "next/font/google";
 import { ReactNode } from "react";
 
+import { templateConfigOf } from "@/lib/utils/templateConfig";
+
 import {
   FILTERABLE_IMAGE_CLASS,
   HELD_FILTER_CLASS,
@@ -20,6 +22,7 @@ import {
 
 import { buildThemeColorOverrideCss } from "./colors";
 import { buildTextCaseCss } from "./textCase";
+import { themeIdOf } from "./theme";
 import { buildTypeScaleCss } from "./typeScale";
 
 const inter = Inter({
@@ -129,12 +132,9 @@ const imageDuotoneCss = `
 export const ThemedBody = async ({ children }: { children: ReactNode }) => {
   const { data: site } = await getSite();
 
-  const templateConfig = site?.settings?.publicSite?.template?.config ?? {};
+  const templateConfig = templateConfigOf(site);
 
-  const themeId =
-    typeof templateConfig.themeId === "string"
-      ? templateConfig.themeId
-      : "default";
+  const themeId = themeIdOf(templateConfig);
   const fontName =
     typeof templateConfig.fontName === "string"
       ? templateConfig.fontName

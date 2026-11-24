@@ -7,6 +7,8 @@ import {
 import { getTranslations } from "next-intl/server";
 import { connection } from "next/server";
 
+import { templateConfigOf } from "@/lib/utils/templateConfig";
+
 import { EventsGrid } from "@/components/EventList";
 
 import { artistSlugsOf, rankRelatedEvents, tagFiltersOf } from "./related";
@@ -33,8 +35,7 @@ const MAX_ARTISTS = 10;
  * the grid too, matching the schema's default.
  */
 export const showsRelatedEvents = (site: Site) =>
-  (site.settings?.publicSite?.template?.config as Record<string, unknown>)
-    ?.showRelatedEvents !== false;
+  templateConfigOf(site).showRelatedEvents !== false;
 
 /**
  * Upcoming events sharing tags or artists with `event`, as the homepage grid,
