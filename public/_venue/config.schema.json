@@ -60,7 +60,7 @@
     },
     "showSearch": {
       "type": "boolean",
-      "default": false,
+      "default": true,
       "description": "Allows users to search your website",
       "title": "Enable Search"
     },
