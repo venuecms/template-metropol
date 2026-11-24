@@ -141,7 +141,7 @@ describe("ThemedBody", () => {
     // React merges same-precedence stylesheets into one tag on the server, so
     // the name sits in a shared data-href.
     expect(html).toMatch(/data-href="[^"]*venue-image-duotone/);
-    expect(html).toContain("background: hsla(var(--primary))");
+    expect(html).toContain("background: hsla(var(--tint))");
     expect(html).toContain("mix-blend-mode: screen");
   });
 });

@@ -8,6 +8,11 @@ html {
   --secondary: 120, 4%, 56%, 1;
   --muted: 120, 4%, 33%, 0.8;
 
+  /* Image tint: the duotone over listing images and the screen over a
+     featured event. Follows the theme's --primary (and any override of it)
+     unless a site picks its own; no theme declares it. */
+  --tint: var(--primary);
+
   /* Card surface: the active theme's background, slightly darkened.
      Resolves lazily, so per-theme --background overrides flow through. */
   --card: color-mix(in srgb, hsla(var(--background)), black 8%);
