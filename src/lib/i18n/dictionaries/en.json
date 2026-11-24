@@ -18,7 +18,8 @@
     "map": "map",
     "today": "Today",
     "tonight": "Tonight",
-    "related_events": "You may also like"
+    "related_events": "You may also like",
+    "part_of": "Part of <link>{title}</link>"
   },
   "shop": {
     "shop": "Shop",

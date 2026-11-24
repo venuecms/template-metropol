@@ -22,6 +22,7 @@ import { VenueImage } from "@/components/VenueImage";
 
 import { TicketList } from "../TicketList";
 import { formatDate, formatDateRange, formatTime } from "../utils";
+import { SubEvents } from "./SubEvents";
 import { WhileUpcoming } from "./WhileUpcoming";
 
 /**
@@ -64,6 +65,13 @@ export const Event = ({
     event.image ??
     event.relations?.parents?.[0]?.image ??
     artists?.find((artist) => !!artist.profile?.image)?.profile.image;
+
+  // A sub-event names the event it is part of. The first parent, as the
+  // image fallback above takes it.
+  const parent = event.relations?.parents?.[0];
+  const parentTitle = parent
+    ? getLocalizedContent(parent.localizedContent, locale).content.title
+    : null;
 
   const eventDate = (template: string) =>
     formatDateRange({
@@ -161,17 +169,45 @@ export const Event = ({
             </div>
           </div>
 
-          <VenueContent
-            // The opening paragraph a step up, as a lead-in to the rest. Its
-            // selector outranks the text-xs each paragraph carries.
-            className="flex flex-col gap-6 text-xs [animation-delay:160ms] motion-safe:animate-slide-up lg:order-1 [&>p:first-of-type]:text-sm"
-            content={content}
-            contentStyles={detailBodyComponents}
-            components={contentHandlers}
-            searchParams={searchParams}
-          />
+          <div
+            className="flex flex-col gap-6 motion-safe:animate-slide-up lg:order-1"
+            style={stagger(2)}
+          >
+            <VenueContent
+              // The opening paragraph a step up, as a lead-in to the rest. Its
+              // selector outranks the text-xs each paragraph carries.
+              className="flex flex-col gap-6 text-xs [&>p:first-of-type]:text-sm"
+              content={content}
+              contentStyles={detailBodyComponents}
+              components={contentHandlers}
+              searchParams={searchParams}
+            />
+            {parent && parentTitle ? (
+              <p className="text-xs text-secondary">
+                {t.rich("part_of", {
+                  title: parentTitle,
+                  link: (chunks) => (
+                    <Link
+                      href={`/events/${parent.slug}`}
+                      className="hover:brightness-150"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
+
+      {event.relations?.children?.length ? (
+        // Its own boundary: each sub-event is read in full, and the parent's
+        // own content should not wait on those reads.
+        <Suspense fallback={null}>
+          <SubEvents event={event} site={site} />
+        </Suspense>
+      ) : null}
 
       {artists.length ? (
         // The artists page's grid, so an artist looks the same wherever
@@ -191,8 +227,6 @@ export const Event = ({
 /**
  * The delay for the nth section of the page sliding up, so the sections come
  * in one after another in reading order, as the homepage grid's cards do.
- * The description takes step 2 as a class instead (160ms): VenueContent
- * passes no style through.
  */
 const stagger = (step: number) => ({ animationDelay: `${step * 80}ms` });
 
