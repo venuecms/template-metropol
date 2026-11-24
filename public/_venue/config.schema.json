@@ -74,6 +74,26 @@
       "description": "The height of your logo, as a multiple of the Base Font Size.",
       "title": "Logo Scale"
     },
+    "iconStyle": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Arrow Bottom Right",
+        "Triangle Right",
+        "Dot Filled",
+        "Custom"
+      ],
+      "default": "None",
+      "description": "A small icon set before the details on an event page. Custom uses the SVG uploaded to the site's media as icons/custom.svg, in the Site Icon Color.",
+      "title": "Site Icon Style"
+    },
+    "colorIcon": {
+      "type": "string",
+      "format": "color",
+      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "description": "The color of the Site Icon. Leave empty for red (#FF4646).",
+      "title": "Site Icon Color"
+    },
     "options": {
       "type": "object",
       "title": "Options",

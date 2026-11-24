@@ -27,6 +27,7 @@ export default {
         "text-3": "hsla(var(--text-3))",
         nav: "hsla(var(--nav))",
         tint: "hsla(var(--tint))",
+        icon: "hsla(var(--icon))",
         "button-background": "hsla(var(--button-background))",
         error: "hsla(var(--error))",
         overlay: "hsla(var(--overlay))",

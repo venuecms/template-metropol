@@ -18,7 +18,8 @@
     "map": "mapa",
     "today": "Dnes",
     "tonight": "Dnes večer",
-    "related_events": "Mohlo by sa vám páčiť aj"
+    "related_events": "Mohlo by sa vám páčiť aj",
+    "part_of": "Súčasť <link>{title}</link>"
   },
   "shop": {
     "shop": "Obchod",
