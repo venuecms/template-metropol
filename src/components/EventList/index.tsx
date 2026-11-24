@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 
 import { VenueImage, type VenueImageAspect } from "@/components/VenueImage";
 
+import { EventDate } from "../EventDate";
 import { LocationLink } from "../LocationLink";
-import { formatDateRange } from "../utils";
 
 export const EventsList = ({
   children,
@@ -120,18 +120,15 @@ export const ListEvent = ({
       ) : null}
       <div className="flex flex-col">
         {event.startDate ? (
-          <div className="text-secondary">
-            <Link href={`/events/${event.slug}`}>
-              {formatDateRange({
-                start: event.startDate,
-                end: event.endDate,
-                withTime: withTime && event.hasTime,
-                template: dateTemplate,
-                timeZone: site.timeZone!,
-                locale,
-              })}
-            </Link>
-          </div>
+          <EventDate
+            href={`/events/${event.slug}`}
+            start={event.startDate}
+            end={event.endDate}
+            withTime={withTime && event.hasTime}
+            template={dateTemplate}
+            timeZone={site.timeZone!}
+            locale={locale}
+          />
         ) : null}
         <div
           className={cn(

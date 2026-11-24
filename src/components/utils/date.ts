@@ -1,6 +1,6 @@
 import { TZDate } from "@date-fns/tz";
 import { type Locale as DateFnsLocale, format } from "date-fns";
-import { sk } from "date-fns/locale";
+import { sk, sv } from "date-fns/locale";
 
 /**
  * How one language writes dates and times. A locale without an entry here
@@ -10,7 +10,7 @@ type DateLocale = {
   dateFnsLocale?: DateFnsLocale;
   /** Rewrites an English-style template (`d MMMM yyyy`) for this language. */
   localizeTemplate: (template: string) => string;
-  /** Suffix appended to the template when the record has a time. */
+  /** Time of day, written after the date when the record has a time. */
   time: string;
   /** Tidies the formatted string, e.g. dropping `.00` from on-the-hour times. */
   clean: (formatted: string) => string;
@@ -20,7 +20,7 @@ type DateLocale = {
 
 const english: DateLocale = {
   localizeTemplate: (template) => template,
-  time: " • h.mmaaa",
+  time: "h.mmaaa",
   clean: (formatted) => formatted.split(".00").join(""),
   rangeDay: "d",
 };
@@ -33,9 +33,19 @@ const dateLocales: Record<string, DateLocale> = {
     dateFnsLocale: sk,
     localizeTemplate: (template) =>
       template.replace(/EEEE d\b/g, "EEEE, d").replace(/\bd\b/g, "d."),
-    time: " • H:mm",
+    time: "H:mm",
     clean: (formatted) => formatted,
     rangeDay: "d.",
+  },
+  // Swedish keeps the English day-month order (`måndag 16 november 2026`) and
+  // writes times on the 24-hour clock after `kl.`, with a colon separator and
+  // no minutes on the hour: `kl. 21`, `kl. 21:30`.
+  sv: {
+    dateFnsLocale: sv,
+    localizeTemplate: (template) => template,
+    time: "'kl.' H:mm",
+    clean: (formatted) => formatted.replace(/:00$/, ""),
+    rangeDay: "d",
   },
 };
 
@@ -68,7 +78,7 @@ export const formatDate = ({
     return dateLocale.clean(
       format(
         new TZDate(date, timeZone),
-        `${pattern}${dateLocale.time}`,
+        `${pattern} ${dateLocale.time}`,
         options,
       ),
     );
@@ -76,7 +86,11 @@ export const formatDate = ({
   return format(new TZDate(date, timeZone), pattern, options);
 };
 
-export const formatDateRange = ({
+/**
+ * A record's date and, when it has one, its start time, kept apart so a
+ * listing can set the time off from the date. A multi-day range has no time.
+ */
+export const formatDateRangeParts = ({
   start,
   end,
   timeZone,
@@ -100,7 +114,16 @@ export const formatDateRange = ({
     startDate.getFullYear() !== endDate.getFullYear();
 
   if (!isMultiDay) {
-    return formatDate({ date: start, withTime, template, timeZone, locale });
+    return {
+      date: formatDate({
+        date: start,
+        withTime: false,
+        template,
+        timeZone,
+        locale,
+      }),
+      time: withTime ? formatTime({ date: start, timeZone, locale }) : null,
+    };
   }
 
   const dateLocale = dateLocaleFor(locale);
@@ -119,7 +142,10 @@ export const formatDateRange = ({
   });
 
   if (isSameMonth) {
-    return `${format(startDate, dateLocale.rangeDay, options)}—${endLabel}`;
+    return {
+      date: `${format(startDate, dateLocale.rangeDay, options)}—${endLabel}`,
+      time: null,
+    };
   }
 
   const startLabel = format(
@@ -127,13 +153,21 @@ export const formatDateRange = ({
     dateLocale.localizeTemplate("d MMMM"),
     options,
   );
-  return `${startLabel} — ${endLabel}`;
+  return { date: `${startLabel} — ${endLabel}`, time: null };
+};
+
+/** {@link formatDateRangeParts} as one string, the time after the date. */
+export const formatDateRange = (
+  args: Parameters<typeof formatDateRangeParts>[0],
+) => {
+  const { date, time } = formatDateRangeParts(args);
+  return time ? `${date} ${time}` : date;
 };
 
 /**
  * A record's time of day alone, in the venue's zone, written the way the
- * language writes a time after a date: `8pm` / `7.30pm` in English, `20:00`
- * in Slovak. For the event page's start and end times.
+ * language writes it: `8pm` / `7.30pm` in English, `20:00`
+ * in Slovak, `kl. 20` / `kl. 19:30` in Swedish. For the event page's start and end times.
  */
 export const formatTime = ({
   date,
@@ -145,11 +179,9 @@ export const formatTime = ({
   locale?: string;
 }) => {
   const dateLocale = dateLocaleFor(locale);
-  // The time pattern each language appends after a date, minus its separator.
-  const pattern = dateLocale.time.replace(/^\s*•\s*/, "");
 
   return dateLocale.clean(
-    format(new TZDate(date, timeZone), pattern, {
+    format(new TZDate(date, timeZone), dateLocale.time, {
       locale: dateLocale.dateFnsLocale,
     }),
   );

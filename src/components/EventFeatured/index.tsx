@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 import { VenueImage } from "@/components/VenueImage";
 
-import { formatDateRange, sameDayLabel } from "../utils";
+import { formatDateRangeParts, sameDayLabel } from "../utils";
 import { FillScreen } from "./FillScreen";
 
 /**
@@ -60,18 +60,26 @@ export const EventFeatured = ({
       })
     : null;
 
-  const label = isCancelled
-    ? t("cancelled")
-    : dayLabel
-      ? t(dayLabel)
-      : formatDateRange({
-          start: event.startDate,
-          end: event.endDate,
-          withTime: event.hasTime,
-          template: "EEEE d MMMM",
-          timeZone: site.timeZone!,
-          locale,
-        });
+  const { date, time } = formatDateRangeParts({
+    start: event.startDate,
+    end: event.endDate,
+    withTime: event.hasTime,
+    template: "EEEE d MMMM",
+    timeZone: site.timeZone!,
+    locale,
+  });
+
+  const label = isCancelled ? (
+    t("cancelled")
+  ) : dayLabel ? (
+    t(dayLabel)
+  ) : (
+    <>
+      {date}
+      {/* Spaced the way the listings space it. */}
+      {time ? <span className="ml-[3ch]">{time}</span> : null}
+    </>
+  );
 
   return (
     <FillScreen fromTop={first} className={className}>
