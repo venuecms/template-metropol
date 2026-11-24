@@ -108,9 +108,9 @@ export const EventFeatured = ({
           aria-hidden
           className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
         />
-        {/* Over the image, and above its duotone layer. A soft shadow keeps the
-          white legible where the picture runs to white itself. */}
-        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center text-white [text-shadow:0_1px_16px_rgb(0_0_0/0.25)] lg:gap-6">
+        {/* Over the image, and above its duotone layer. A soft shadow in the tint keeps
+          the white legible where the picture runs to white itself. */}
+        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center text-white [text-shadow:0_1px_16px_color-mix(in_srgb,hsla(var(--tint))_25%,transparent)] lg:gap-6">
           <span className="text-sm tracking-[0.2em]">{label}</span>
           <h2
             className={cn(
