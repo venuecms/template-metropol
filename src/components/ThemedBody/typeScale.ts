@@ -1,34 +1,52 @@
 /**
- * The site's type scale, from `typeScale` in the template config: the body
- * size, and how much bigger each font size is than the one below it.
+ * The site's type sizes, from two settings in the template config:
  *
- * Each scale gives a base size (`sm`, the body text) and a ratio for both
- * ends of the viewport range, 360px to 1240px; each step above or below the
- * base multiplies or divides by the ratio. Every size grows fluidly between
- * its two ends — the same formula as the variables in globals.css. Only the
- * variables change, so every `text-*` class in the template follows.
+ * - `baseSize`: the body text (`sm`). Small, Medium or Large.
+ * - `typeScale`: how much bigger each size is than the one below it, as a
+ *   musical interval — Major Second (1.125) up to Augmented Fourth (1.414).
  *
- * - `default`: 16px → 22px, ratio 1.414 (√2). Big headings. This is the
- *   scale in globals.css, so it adds nothing.
- * - `compact`: 15px → 18px, ratio 1.2 → 1.25. Slightly smaller body text,
- *   with headings that open up on wider screens.
- * - `minimal`: 16px → 22px, ratio 1.125. Headings barely grow; for
- *   text-heavy sites.
+ * Each step above or below the base multiplies or divides by the ratio, and
+ * every size grows fluidly as the viewport widens from 360px to 1240px — the
+ * same formula as the variables in globals.css. Only the variables change, so
+ * every `text-*` class in the template follows.
  *
- * Unset or unknown values add nothing either. The schema offers the names
- * capitalised (`Compact`), since the settings form shows enum values as they
- * are; any case is accepted.
+ * Medium with Augmented Fourth is the scale in globals.css, so it adds
+ * nothing; so does a site that never saved either setting.
+ *
+ * The settings form shows enum values as they are (it has no support for
+ * enumNames), so the schema offers the names themselves; any case is
+ * accepted.
  */
-type Scale = {
-  baseMinPx: number;
-  baseMaxPx: number;
-  ratioMin: number;
-  ratioMax: number;
+type Range = [min: number, max: number];
+
+/** Body text size at the narrow and wide ends of the viewport range, in px. */
+const BASE_SIZES: Record<string, Range> = {
+  small: [15, 18],
+  medium: [16, 22],
+  large: [18, 24],
 };
 
-const SCALES: Record<string, Scale> = {
-  compact: { baseMinPx: 15, baseMaxPx: 18, ratioMin: 1.2, ratioMax: 1.25 },
-  minimal: { baseMinPx: 16, baseMaxPx: 22, ratioMin: 1.125, ratioMax: 1.125 },
+const RATIOS: Record<string, number> = {
+  "major second": 1.125,
+  "minor third": 1.2,
+  "major third": 1.25,
+  "perfect fourth": 1.333,
+  "augmented fourth": 1.414,
+};
+
+const DEFAULT_BASE = "medium";
+const DEFAULT_RATIO = "augmented fourth";
+
+/**
+ * Scales offered before the base size was a setting of its own, each with
+ * the base it came with. A site that saved one keeps exactly its look; a base
+ * size set alongside it still applies.
+ */
+const LEGACY_SCALES: Record<string, { ratio: Range; base: string }> = {
+  default: { ratio: [1.414, 1.414], base: "medium" },
+  // The ratio opens up from 1.2 to 1.25 as the viewport widens.
+  compact: { ratio: [1.2, 1.25], base: "small" },
+  minimal: { ratio: [1.125, 1.125], base: "medium" },
 };
 
 /** Each step and its distance from `sm`, the base. */
@@ -56,17 +74,32 @@ const fluidSize = (minPx: number, maxPx: number) => {
   return `clamp(${round(minPx / REM_PX)}rem, ${round(interceptPx / REM_PX)}rem + ${round(slope * 100)}vw, ${round(maxPx / REM_PX)}rem)`;
 };
 
+const keyOf = (value: unknown) =>
+  typeof value === "string" ? value.trim().toLowerCase() : "";
+
 /**
- * The stylesheet for the configured scale, or null for the default one.
+ * The stylesheet for the configured base size and scale, or null when they
+ * are the template's own.
  */
 export const buildTypeScaleCss = (config: Record<string, unknown>) => {
-  const scale =
-    typeof config.typeScale === "string"
-      ? SCALES[config.typeScale.toLowerCase()]
-      : undefined;
-  if (!scale) return null;
+  const scaleKey = keyOf(config.typeScale);
+  const legacy = LEGACY_SCALES[scaleKey];
 
-  const { baseMinPx, baseMaxPx, ratioMin, ratioMax } = scale;
+  const ratioKey = scaleKey in RATIOS ? scaleKey : undefined;
+  const [ratioMin, ratioMax]: Range = ratioKey
+    ? [RATIOS[ratioKey], RATIOS[ratioKey]]
+    : (legacy?.ratio ?? [RATIOS[DEFAULT_RATIO], RATIOS[DEFAULT_RATIO]]);
+
+  const baseKey = keyOf(config.baseSize);
+  const base = baseKey in BASE_SIZES ? baseKey : (legacy?.base ?? DEFAULT_BASE);
+  const [baseMinPx, baseMaxPx] = BASE_SIZES[base];
+
+  const isTemplateDefault =
+    base === DEFAULT_BASE &&
+    ratioMin === RATIOS[DEFAULT_RATIO] &&
+    ratioMax === RATIOS[DEFAULT_RATIO];
+  if (isTemplateDefault) return null;
+
   const declarations = STEPS.map(
     ([name, step]) =>
       `--${name}: ${fluidSize(baseMinPx * ratioMin ** step, baseMaxPx * ratioMax ** step)};`,
