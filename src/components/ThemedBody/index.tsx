@@ -1,12 +1,14 @@
 import { getSite } from "@venuecms/sdk-next";
 import { ThemeProvider } from "next-themes";
 import {
+  Cardo,
   EB_Garamond,
   Hanken_Grotesk,
   IBM_Plex_Mono,
   Inter,
   Jost,
   Open_Sans,
+  Rethink_Sans,
   Schibsted_Grotesk,
 } from "next/font/google";
 import { ReactNode } from "react";
@@ -18,6 +20,7 @@ import {
 
 import { buildThemeColorOverrideCss } from "./colors";
 import { buildTextCaseCss } from "./textCase";
+import { buildTypeScaleCss } from "./typeScale";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -60,6 +63,17 @@ const OpenSans = Open_Sans({
   display: "swap",
 });
 
+const RethinkSans = Rethink_Sans({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cardo = Cardo({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
 const ThemeFonts = {
   Inter: inter.style,
   EB_Garamond: ebGaramond.style,
@@ -68,6 +82,8 @@ const ThemeFonts = {
   jost: jost.style,
   IBM_Plex_Mono: IBMPlexMono.style,
   Open_Sans: OpenSans.style,
+  Rethink_Sans: RethinkSans.style,
+  Cardo: cardo.style,
   default: SchibstedGrotesk.style,
   custom: { fontFamily: "custom" },
 };
@@ -128,6 +144,7 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
   // no value for it, and the schema's default only reaches the settings form.
   const imageDuotone = templateConfig.imageDuotone !== false;
   const textCaseCss = buildTextCaseCss(templateConfig);
+  const typeScaleCss = buildTypeScaleCss(templateConfig);
   const fontStyle =
     ThemeFonts[fontName as keyof typeof ThemeFonts] ?? ThemeFonts.default;
 
@@ -148,6 +165,11 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
       {textCaseCss && (
         <style href="venue-text-case" precedence="high">
           {textCaseCss}
+        </style>
+      )}
+      {typeScaleCss && (
+        <style href="venue-type-scale" precedence="high">
+          {typeScaleCss}
         </style>
       )}
       {imageDuotone && (

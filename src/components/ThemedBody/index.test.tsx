@@ -15,12 +15,14 @@ vi.mock("next/font/google", () => {
 
   return Object.fromEntries(
     [
+      "Cardo",
       "EB_Garamond",
       "Hanken_Grotesk",
       "IBM_Plex_Mono",
       "Inter",
       "Jost",
       "Open_Sans",
+      "Rethink_Sans",
       "Schibsted_Grotesk",
     ].map((name) => [name, font]),
   );
