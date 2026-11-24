@@ -65,6 +65,16 @@ export const Event = ({
     event.relations?.parents?.[0]?.image ??
     artists?.find((artist) => !!artist.profile?.image)?.profile.image;
 
+  const eventDate = (template: string) =>
+    formatDateRange({
+      start: event.startDate,
+      end: event.endDate,
+      withTime: false,
+      template,
+      timeZone: site.timeZone!,
+      locale,
+    });
+
   return (
     <article className="flex flex-col gap-12 pb-6 pt-6 lg:gap-16 lg:pb-24">
       {/* Title and date row sit a little closer than the date row and the
@@ -83,14 +93,18 @@ export const Event = ({
 
           <div className="flex flex-wrap items-center gap-x-12 gap-y-4 text-sm">
             <span className={cn("text-primary", isCancelled && "line-through")}>
-              {formatDateRange({
-                start: event.startDate,
-                end: event.endDate,
-                withTime: false,
-                template: "EEEE d MMMM",
-                timeZone: site.timeZone!,
-                locale,
-              })}
+              {/* The year is shown only once the event is over, so an old
+                  event isn't read as this year's. Past-ness is known only
+                  at request time, so the prerendered shell shows it without.
+                  A multi-day range carries its year already. */}
+              <Suspense fallback={eventDate("EEEE d MMMM")}>
+                <WhileUpcoming
+                  event={event}
+                  past={eventDate("EEEE d MMMM yyyy")}
+                >
+                  {eventDate("EEEE d MMMM")}
+                </WhileUpcoming>
+              </Suspense>
               {/* The start time, kept apart from the date so a multi-day
                 range still gets one. */}
               {event.hasTime ? (
