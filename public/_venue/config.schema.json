@@ -83,7 +83,7 @@
         "Dot Filled",
         "Custom"
       ],
-      "default": "Arrow Bottom Right",
+      "default": "None",
       "description": "A small icon set before the details on an event page. Custom uses the SVG uploaded to the site's media as icons/custom.svg, in the Site Icon Color.",
       "title": "Site Icon Style"
     },

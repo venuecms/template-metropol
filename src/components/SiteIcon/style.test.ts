@@ -14,9 +14,9 @@ describe("iconStyleOf", () => {
   });
 
   it.each([[{}], [{ iconStyle: "Star" }], [{ iconStyle: 1 }]])(
-    "falls back to Arrow Bottom Right for %j",
+    "falls back to None for %j",
     (config) => {
-      expect(iconStyleOf(config)).toBe("Arrow Bottom Right");
+      expect(iconStyleOf(config)).toBe("None");
     },
   );
 });

@@ -74,9 +74,7 @@ export const Event = ({
   // A sub-event names the event it is part of. The first parent, as the
   // image fallback above takes it.
   const parent = event.relations?.parents?.[0];
-  const parentTitle = parent
-    ? getLocalizedContent(parent.localizedContent, locale).content.title
-    : null;
+  const parentTitle = parent ? titleOf(parent.localizedContent, locale) : null;
 
   const icon = siteIconOf(site);
 
@@ -233,6 +231,21 @@ export const Event = ({
     </article>
   );
 };
+
+/**
+ * A record's title in `locale`, or in English when it has none in that
+ * language, so an untranslated title still reads rather than vanishing.
+ */
+const titleOf = (
+  localizedContent: { locale: string; title?: string | null }[],
+  locale: string,
+) =>
+  [locale, "en"]
+    .map(
+      (candidate) =>
+        localizedContent.find((content) => content.locale === candidate)?.title,
+    )
+    .find(Boolean) ?? null;
 
 /**
  * The delay for the nth section of the page sliding up, so the sections come

@@ -1,9 +1,8 @@
 /**
  * The Site Icon Style setting (`iconStyle` in the template config): the
- * marker set before the details under an event's image. Arrow Bottom Right
- * unless the site picks another, as the schema's default does: a site that
- * never saved the setting has no value for it, and the default only reaches
- * the settings form. Anything this template does not know falls back too.
+ * marker set before the details under an event's image. `None` unless the
+ * site picks one, as the schema's default is, and for anything this template
+ * does not know.
  */
 export const ICON_STYLES = [
   "None",
@@ -13,7 +12,7 @@ export const ICON_STYLES = [
   "Custom",
 ] as const;
 
-export const DEFAULT_ICON_STYLE = "Arrow Bottom Right";
+export const DEFAULT_ICON_STYLE = "None";
 
 export type IconStyle = (typeof ICON_STYLES)[number];
 
