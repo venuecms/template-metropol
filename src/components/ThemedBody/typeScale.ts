@@ -15,7 +15,9 @@
  * - `minimal`: 16px → 22px, ratio 1.125. Headings barely grow; for
  *   text-heavy sites.
  *
- * Unset or unknown values add nothing either.
+ * Unset or unknown values add nothing either. The schema offers the names
+ * capitalised (`Compact`), since the settings form shows enum values as they
+ * are; any case is accepted.
  */
 type Scale = {
   baseMinPx: number;
@@ -59,7 +61,9 @@ const fluidSize = (minPx: number, maxPx: number) => {
  */
 export const buildTypeScaleCss = (config: Record<string, unknown>) => {
   const scale =
-    typeof config.typeScale === "string" ? SCALES[config.typeScale] : undefined;
+    typeof config.typeScale === "string"
+      ? SCALES[config.typeScale.toLowerCase()]
+      : undefined;
   if (!scale) return null;
 
   const { baseMinPx, baseMaxPx, ratioMin, ratioMax } = scale;

@@ -4,8 +4,8 @@
   "properties": {
     "themeId": {
       "type": "string",
-      "enum": ["default", "hundredK", "blackOnWhite"],
-      "default": "default",
+      "enum": ["Default", "Dark", "Light"],
+      "default": "Default",
       "title": "Theme"
     },
     "fontName": {
@@ -28,113 +28,120 @@
     },
     "textCase": {
       "type": "string",
-      "enum": ["none", "lowercase", "uppercase"],
-      "enumNames": ["As typed", "lowercase", "UPPERCASE"],
-      "default": "uppercase",
+      "enum": ["As typed", "lowercase", "UPPERCASE"],
+      "default": "UPPERCASE",
       "description": "Sets the letter case of your text, whatever case it was typed in. Only how it looks changes; the text itself is kept as typed.",
       "title": "Text Case"
     },
     "textCaseScope": {
       "type": "string",
-      "enum": ["paragraphs", "all"],
-      "enumNames": ["Paragraphs", "All"],
-      "default": "paragraphs",
+      "enum": ["Paragraphs", "All"],
+      "default": "Paragraphs",
       "description": "Which text the Text Case applies to: body paragraphs only, or all text including navigation, links and buttons. Headings have their own setting.",
       "title": "Text Case Applies To"
     },
     "headingCase": {
       "type": "string",
-      "enum": ["none", "lowercase", "uppercase"],
-      "enumNames": ["As typed", "lowercase", "UPPERCASE"],
-      "default": "none",
+      "enum": ["As typed", "lowercase", "UPPERCASE"],
+      "default": "As typed",
       "description": "Sets the letter case of headings and titles, whatever case they were typed in. Takes priority over Text Case.",
       "title": "Heading Case"
     },
     "typeScale": {
       "type": "string",
-      "enum": ["default", "compact", "minimal"],
-      "enumNames": ["Default", "Compact", "Minimal"],
-      "default": "default",
+      "enum": ["Default", "Compact", "Minimal"],
+      "default": "Default",
       "description": "The size of your text and how much bigger headings and titles are than body text. Default makes headings large and dramatic. Compact uses slightly smaller body text and keeps headings smaller. Minimal makes headings only a little bigger than body text.",
       "title": "Type Scale"
     },
-    "showSearch": {
-      "type": "boolean",
-      "default": true,
-      "description": "Allows users to search your website",
-      "title": "Enable Search"
+    "options": {
+      "type": "object",
+      "title": "Options",
+      "properties": {
+        "showSearch": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allows users to search your website",
+          "title": "Enable Search"
+        },
+        "showLogin": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allows users to login to your website",
+          "title": "Enable Login"
+        },
+        "showHeroImage": {
+          "type": "boolean",
+          "default": false,
+          "description": "Shows your hero image on the home page",
+          "title": "Show Hero Image"
+        },
+        "noHeroOverlay": {
+          "type": "boolean",
+          "default": false,
+          "description": "Removes the opacity overlay",
+          "title": "Remove Hero Opacity Overlay"
+        },
+        "imageDuotone": {
+          "type": "boolean",
+          "default": true,
+          "title": "Duotone Listing Images"
+        },
+        "colorTint": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Used on listing images and homepage featured events. Leave empty to use the primary text color.",
+          "title": "Duotone Tint Color"
+        },
+        "showRelatedEvents": {
+          "type": "boolean",
+          "default": true,
+          "title": "Show Related Events"
+        }
+      }
     },
-    "showLogin": {
-      "type": "boolean",
-      "default": false,
-      "description": "Allows users to login to your website",
-      "title": "Enable Login"
-    },
-    "showHeroImage": {
-      "type": "boolean",
-      "default": false,
-      "description": "Shows your hero image on the home page",
-      "title": "Show Hero Image"
-    },
-    "noHeroOverlay": {
-      "type": "boolean",
-      "default": false,
-      "description": "Removes the opacity overlay",
-      "title": "Remove Hero Opacity Overlay"
-    },
-    "imageDuotone": {
-      "type": "boolean",
-      "default": true,
-      "description": "Tints the images in event, product and artist listings in your Image Tint Color (your primary color unless you pick one): shadows take the color, highlights stay white. Individual pages keep their images in full color. On unless switched off.",
-      "title": "Duotone Listing Images"
-    },
-    "showRelatedEvents": {
-      "type": "boolean",
-      "default": true,
-      "description": "Shows a grid of upcoming events at the bottom of each event page that share one or more tags or artists with it. Events with the most in common come first, then the soonest. Hidden when there are none. On unless switched off.",
-      "title": "Show Related Events"
-    },
-    "colorBackground": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Overrides the theme's page background color, in both light and dark mode. Leave empty to keep the theme's own color.",
-      "title": "Background Color"
-    },
-    "colorPrimary": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Overrides the theme's main text color, in both light and dark mode. Leave empty to keep the theme's own color.",
-      "title": "Primary Color"
-    },
-    "colorSecondary": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Overrides the theme's secondary text color, in both light and dark mode. Leave empty to keep the theme's own color.",
-      "title": "Secondary Color"
-    },
-    "colorMuted": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Overrides the theme's muted text color, in both light and dark mode. Add two extra hex digits for transparency, e.g. #00000066. Leave empty to keep the theme's own color.",
-      "title": "Muted Color"
-    },
-    "colorNav": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Overrides the theme's navigation color, in both light and dark mode. Leave empty to keep the theme's own color.",
-      "title": "Navigation Color"
-    },
-    "colorTint": {
-      "type": "string",
-      "format": "color",
-      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "Used on listing images and homepage featured events. Leave empty to use the primary text color.",
-      "title": "Image Tint Color"
+    "colors": {
+      "type": "object",
+      "title": "Choose Your Own Colors",
+      "description": "Leave empty to keep the theme's own color.",
+      "properties": {
+        "colorBackground": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's page background color, in both light and dark mode.",
+          "title": "Background Color"
+        },
+        "colorPrimary": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's main text color, in both light and dark mode.",
+          "title": "Primary Color"
+        },
+        "colorSecondary": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's secondary text color, in both light and dark mode.",
+          "title": "Secondary Color"
+        },
+        "colorMuted": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's muted text color, in both light and dark mode. Add two extra hex digits for transparency, e.g. #00000066.",
+          "title": "Muted Color"
+        },
+        "colorNav": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's navigation color, in both light and dark mode.",
+          "title": "Navigation Color"
+        }
+      }
     }
   }
 }

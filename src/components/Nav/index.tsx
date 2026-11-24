@@ -3,6 +3,8 @@ import { getPages } from "@venuecms/sdk-next";
 import { getLocale } from "next-intl/server";
 import { ReactNode } from "react";
 
+import { templateConfigOf } from "@/lib/utils/templateConfig";
+
 // The site description is a short blurb, so it takes prose styling only — no
 // listing blocks to resolve here.
 import { proseHandlers } from "../utils/handlers";
@@ -20,9 +22,10 @@ export const Nav = async ({ logo, site }: { logo: ReactNode; site: Site }) => {
   const locale = await getLocale();
   const { data: pages } = await getPages();
 
-  // Defined in the custom fields for this template under public/_venue/config.schema.json
-  const showSearch: boolean =
-    !!site.settings?.publicSite?.template?.config?.showSearch;
+  // `showSearch` in public/_venue/config.schema.json. On unless switched off:
+  // a site that never saved the setting has no value for it, and the schema's
+  // default only reaches the settings form.
+  const showSearch = templateConfigOf(site).showSearch !== false;
 
   const items = buildNavItems(pages?.records ?? [], locale);
 

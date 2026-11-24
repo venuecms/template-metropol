@@ -34,11 +34,20 @@ describe("buildTextCaseCss", () => {
     );
   });
 
-  // The schema briefly stored its labels as the values.
-  it("reads the labels the schema used to store", () => {
+  // The settings form shows enum values as they are, so the schema offers
+  // these readable names.
+  it.each([
+    ["As typed", "All", "body { text-transform: none; }"],
+    ["UPPERCASE", "Paragraphs", "p { text-transform: uppercase; }"],
+    ["lowercase", "All", "body { text-transform: lowercase; }"],
+  ])("reads %s on %s as the schema offers them", (textCase, scope, css) => {
+    expect(buildTextCaseCss({ textCase, textCaseScope: scope })).toBe(css);
+  });
+
+  it("reads the heading case as the schema offers it", () => {
     expect(
-      buildTextCaseCss({ textCase: "As typed", textCaseScope: "All" }),
-    ).toBe("body { text-transform: none; }");
+      buildTextCaseCss({ textCase: "As typed", headingCase: "UPPERCASE" }),
+    ).toBe("h1, h2, h3, h4, h5, h6 { text-transform: uppercase; }");
   });
 
   describe("headings", () => {

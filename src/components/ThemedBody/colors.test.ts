@@ -171,13 +171,26 @@ describe("buildThemeColorOverrideCss on the default theme", () => {
 });
 
 describe("the config schema and the theme variables", () => {
-  const schema = JSON.parse(
+  type SchemaProperty = {
+    type: string;
+    format?: string;
+    pattern?: string;
+    properties?: Record<string, SchemaProperty>;
+  };
+  const rawSchema = JSON.parse(
     readRepoFile("../../../public/_venue/config.schema.json"),
-  ) as {
-    properties: Record<
-      string,
-      { type: string; format?: string; pattern?: string }
-    >;
+  ) as { properties: Record<string, SchemaProperty> };
+  // Settings in a group (an object property, shown under a heading) are read
+  // as if they were at the top level — see templateConfigOf — so they count
+  // the same here.
+  const schema = {
+    properties: Object.fromEntries(
+      Object.entries(rawSchema.properties).flatMap(([key, property]) =>
+        property.type === "object" && property.properties
+          ? Object.entries(property.properties)
+          : [[key, property]],
+      ),
+    ),
   };
   const globalsCss = readRepoFile("../../app/globals.css");
 

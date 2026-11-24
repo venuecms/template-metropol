@@ -28,6 +28,18 @@ describe("buildTypeScaleCss", () => {
     );
   });
 
+  // The schema offers the names capitalised, as the settings form shows them.
+  it.each(["Compact", "Minimal"])("accepts %s as the schema offers it", (s) => {
+    expect(buildTypeScaleCss({ typeScale: s })).toBe(
+      buildTypeScaleCss({ typeScale: s.toLowerCase() }),
+    );
+    expect(buildTypeScaleCss({ typeScale: s })).not.toBeNull();
+  });
+
+  it("adds nothing for Default", () => {
+    expect(buildTypeScaleCss({ typeScale: "Default" })).toBeNull();
+  });
+
   it("keeps the 16px–22px base for minimal", () => {
     expect(buildTypeScaleCss({ typeScale: "minimal" })).toContain(
       "--sm: clamp(1rem, 0.8466rem + 0.6818vw, 1.375rem);",
