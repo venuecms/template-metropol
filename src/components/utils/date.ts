@@ -154,3 +154,43 @@ export const formatTime = ({
     }),
   );
 };
+
+/** The hour, in the venue's zone, from which a same-day start is "tonight". */
+const EVENING_HOUR = 17;
+
+/**
+ * Whether an event starts today in the venue's zone and, if so, whether that
+ * reads as today or tonight: `tonight` for a start at 5pm or later, `today`
+ * for one before. `null` for any other day, when the date itself is shown.
+ *
+ * An event with no time set has no start hour to judge by, so it is `today`.
+ */
+export const sameDayLabel = ({
+  start,
+  hasTime,
+  now,
+  timeZone,
+}: {
+  start: string;
+  hasTime: boolean;
+  now: Date;
+  timeZone?: string;
+}): "today" | "tonight" | null => {
+  const startDate = new TZDate(start, timeZone);
+  const today = new TZDate(now, timeZone);
+
+  if (Number.isNaN(startDate.getTime())) {
+    return null;
+  }
+
+  const sameDay =
+    startDate.getFullYear() === today.getFullYear() &&
+    startDate.getMonth() === today.getMonth() &&
+    startDate.getDate() === today.getDate();
+
+  if (!sameDay) {
+    return null;
+  }
+
+  return hasTime && startDate.getHours() >= EVENING_HOUR ? "tonight" : "today";
+};
