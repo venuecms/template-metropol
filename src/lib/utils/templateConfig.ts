@@ -5,7 +5,7 @@ import type { Site } from "@venuecms/sdk-next";
  * object property so the settings form shows them under a heading. The form
  * saves them nested too, as `config.options.showSearch` and so on.
  */
-const GROUPS = ["options", "colors"] as const;
+const GROUPS = ["typography", "options", "colors"] as const;
 
 /**
  * The site's template config with its groups flattened, so every setting
