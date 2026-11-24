@@ -19,6 +19,7 @@ export const THEME_COLOR_VARIABLES = {
   colorMuted: "--muted",
   colorNav: "--nav",
   colorTint: "--tint",
+  colorIcon: "--icon",
 } as const;
 
 export type ThemeColorKey = keyof typeof THEME_COLOR_VARIABLES;
@@ -37,6 +38,7 @@ export type ThemeColorVariable = (typeof THEME_COLOR_VARIABLES)[ThemeColorKey];
  *
  * `--tint` is left out: it follows `--primary`, so pinning `--primary` pins
  * it too, and a fixed value here would stop it following a chosen primary.
+ * `--icon` is left out as well: it is one fixed color in both schemes.
  *
  * `colors.test.ts` pins these values to globals.css so the two cannot drift.
  */

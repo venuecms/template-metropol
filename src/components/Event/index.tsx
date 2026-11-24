@@ -18,6 +18,11 @@ import {
   detailBodyComponents,
 } from "@/components/ListingBlock";
 import { ProfilesGrid } from "@/components/ProfilesGrid";
+import {
+  SiteIcon,
+  type SiteIconChoice,
+  siteIconOf,
+} from "@/components/SiteIcon";
 import { VenueImage } from "@/components/VenueImage";
 
 import { TicketList } from "../TicketList";
@@ -72,6 +77,8 @@ export const Event = ({
   const parentTitle = parent
     ? getLocalizedContent(parent.localizedContent, locale).content.title
     : null;
+
+  const icon = siteIconOf(site);
 
   const eventDate = (template: string) =>
     formatDateRange({
@@ -153,12 +160,12 @@ export const Event = ({
                 short, and stacked they read as one long block. */}
             <div className="grid grid-cols-2 gap-8 text-xs sm:grid-cols-3">
               {location ? (
-                <Detail>
+                <Detail icon={icon}>
                   <EventLocation location={location} />
                 </Detail>
               ) : null}
               {event.hasTime ? (
-                <Detail>
+                <Detail icon={icon}>
                   <EventTimes
                     start={event.startDate}
                     end={event.endDate}
@@ -183,18 +190,21 @@ export const Event = ({
               searchParams={searchParams}
             />
             {parent && parentTitle ? (
-              <p className="text-xs text-secondary">
-                {t.rich("part_of", {
-                  title: parentTitle,
-                  link: (chunks) => (
-                    <Link
-                      href={`/events/${parent.slug}`}
-                      className="hover:brightness-150"
-                    >
-                      {chunks}
-                    </Link>
-                  ),
-                })}
+              <p className="flex gap-2 text-xs text-secondary">
+                <SiteIcon icon={icon} className="text-icon" />
+                <span>
+                  {t.rich("part_of", {
+                    title: parentTitle,
+                    link: (chunks) => (
+                      <Link
+                        href={`/events/${parent.slug}`}
+                        className="hover:brightness-150"
+                      >
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </span>
               </p>
             ) : null}
           </div>
@@ -230,9 +240,21 @@ export const Event = ({
  */
 const stagger = (step: number) => ({ animationDelay: `${step * 80}ms` });
 
-/** One of the facts under the image. */
-const Detail = ({ children }: { children: ReactNode }) => (
-  <div className="min-w-0 text-primary">{children}</div>
+/**
+ * One of the facts under the image, led by the site's icon when it has one
+ * (the Site Icon Style setting), in the Site Icon Color.
+ */
+const Detail = ({
+  icon,
+  children,
+}: {
+  icon: SiteIconChoice;
+  children: ReactNode;
+}) => (
+  <div className="flex min-w-0 gap-2 text-primary">
+    <SiteIcon icon={icon} className="text-icon" />
+    <div className="min-w-0">{children}</div>
+  </div>
 );
 
 const EventLocation = ({ location }: { location: LocationSlim }) => {
