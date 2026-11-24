@@ -62,6 +62,7 @@ export const EventsGrid = ({
           imageClassName="sm:w-full"
           imageAspect={imageAspect}
           imageCredit={false}
+          locationToEvent
         />
       </div>
     ))}
@@ -78,6 +79,7 @@ export const ListEvent = ({
   imageClassName,
   imageAspect = "video",
   imageCredit = true,
+  locationToEvent = false,
 }: {
   event: Event;
   site: Site;
@@ -91,6 +93,8 @@ export const ListEvent = ({
   imageAspect?: VenueImageAspect;
   /** Whether the image shows its photo credit; the grid turns it off. */
   imageCredit?: boolean;
+  /** Whether the location links to the event page instead of its map. */
+  locationToEvent?: boolean;
 }) => {
   const locale = useLocale();
   const t = useTranslations("events");
@@ -139,7 +143,10 @@ export const ListEvent = ({
           <Link href={`/events/${event.slug}`}>{content.title}</Link>
         </div>
         {event.location && !event.location.isDefault ? (
-          <LocationLink location={event.location} />
+          <LocationLink
+            location={event.location}
+            href={locationToEvent ? `/events/${event.slug}` : undefined}
+          />
         ) : null}
         {isCancelled ? <div className="">{t("cancelled")}</div> : null}
       </div>
