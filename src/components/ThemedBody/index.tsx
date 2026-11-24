@@ -21,6 +21,7 @@ import {
 } from "@/components/VenueImage";
 
 import { buildThemeColorOverrideCss } from "./colors";
+import { buildLogoScaleCss } from "./logoScale";
 import { buildTextCaseCss } from "./textCase";
 import { themeIdOf } from "./theme";
 import { buildTypeScaleCss } from "./typeScale";
@@ -145,6 +146,7 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
   const imageDuotone = templateConfig.imageDuotone !== false;
   const textCaseCss = buildTextCaseCss(templateConfig);
   const typeScaleCss = buildTypeScaleCss(templateConfig);
+  const logoScaleCss = buildLogoScaleCss(templateConfig);
   const fontStyle =
     ThemeFonts[fontName as keyof typeof ThemeFonts] ?? ThemeFonts.default;
 
@@ -170,6 +172,11 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
       {typeScaleCss && (
         <style href="venue-type-scale" precedence="high">
           {typeScaleCss}
+        </style>
+      )}
+      {logoScaleCss && (
+        <style href="venue-logo-scale" precedence="high">
+          {logoScaleCss}
         </style>
       )}
       {imageDuotone && (

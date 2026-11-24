@@ -23,7 +23,10 @@ export const SiteLogo = ({
   const headerImage = logo ? (
     <VenueImage
       image={logo}
-      className="h-auto w-auto min-w-8 sm:h-auto sm:max-h-12 sm:w-auto sm:max-w-[32rem]"
+      // Sized from the base text size (`--sm`), so the logo follows the site's
+      // Base Font Size setting and grows with the viewport as the text does.
+      // `--logo-scale` is the Logo Scale setting; see ThemedBody/logoScale.
+      className="h-[calc(var(--sm)*var(--logo-scale,1.5))] w-auto min-w-8 max-w-full object-contain object-left sm:max-w-[32rem]"
     />
   ) : null;
 
