@@ -8,51 +8,112 @@
       "default": "Default",
       "title": "Theme"
     },
-    "fontName": {
-      "type": "string",
-      "enum": [
-        "default",
-        "custom",
-        "Schibsted_Grotesk",
-        "Hanken_Grotesk",
-        "jost",
-        "IBM_Plex_Mono",
-        "EB_Garamond",
-        "Inter",
-        "Open_Sans",
-        "Rethink_Sans",
-        "Cardo"
-      ],
-      "default": "jost",
-      "title": "Font"
+    "typography": {
+      "type": "object",
+      "title": "Typography",
+      "properties": {
+        "fontName": {
+          "type": "string",
+          "enum": [
+            "default",
+            "custom",
+            "Schibsted_Grotesk",
+            "Hanken_Grotesk",
+            "jost",
+            "IBM_Plex_Mono",
+            "EB_Garamond",
+            "Inter",
+            "Open_Sans",
+            "Rethink_Sans",
+            "Cardo"
+          ],
+          "default": "jost",
+          "title": "Font"
+        },
+        "textCase": {
+          "type": "string",
+          "enum": ["As typed", "lowercase", "UPPERCASE"],
+          "default": "UPPERCASE",
+          "description": "Sets the letter case of your text, whatever case it was typed in. Only how it looks changes; the text itself is kept as typed.",
+          "title": "Text Case"
+        },
+        "textCaseScope": {
+          "type": "string",
+          "enum": ["Paragraphs", "All"],
+          "default": "Paragraphs",
+          "description": "Which text the Text Case applies to: body paragraphs only, or all text including navigation, links and buttons. Headings have their own setting.",
+          "title": "Text Case Applies To"
+        },
+        "headingCase": {
+          "type": "string",
+          "enum": ["As typed", "lowercase", "UPPERCASE"],
+          "default": "As typed",
+          "description": "Sets the letter case of headings and titles, whatever case they were typed in. Takes priority over Text Case.",
+          "title": "Heading Case"
+        },
+        "baseSize": {
+          "type": "string",
+          "enum": ["Small", "Medium", "Large"],
+          "default": "Medium",
+          "description": "The size of your body text. Headings and titles grow from it by the Type Scale.",
+          "title": "Base Font Size"
+        },
+        "typeScale": {
+          "type": "string",
+          "enum": [
+            "Major Second",
+            "Minor Third",
+            "Major Third",
+            "Perfect Fourth",
+            "Augmented Fourth"
+          ],
+          "default": "Augmented Fourth",
+          "description": "How much bigger each text size is than the one below it. Major Second (×1.125) keeps headings close to body text; Minor Third (×1.2), Major Third (×1.25) and Perfect Fourth (×1.333) give each step more contrast; Augmented Fourth (×1.414) makes headings large and dramatic.",
+          "title": "Type Scale"
+        }
+      }
     },
-    "textCase": {
-      "type": "string",
-      "enum": ["As typed", "lowercase", "UPPERCASE"],
-      "default": "UPPERCASE",
-      "description": "Sets the letter case of your text, whatever case it was typed in. Only how it looks changes; the text itself is kept as typed.",
-      "title": "Text Case"
-    },
-    "textCaseScope": {
-      "type": "string",
-      "enum": ["Paragraphs", "All"],
-      "default": "Paragraphs",
-      "description": "Which text the Text Case applies to: body paragraphs only, or all text including navigation, links and buttons. Headings have their own setting.",
-      "title": "Text Case Applies To"
-    },
-    "headingCase": {
-      "type": "string",
-      "enum": ["As typed", "lowercase", "UPPERCASE"],
-      "default": "As typed",
-      "description": "Sets the letter case of headings and titles, whatever case they were typed in. Takes priority over Text Case.",
-      "title": "Heading Case"
-    },
-    "typeScale": {
-      "type": "string",
-      "enum": ["Default", "Compact", "Minimal"],
-      "default": "Default",
-      "description": "The size of your text and how much bigger headings and titles are than body text. Default makes headings large and dramatic. Compact uses slightly smaller body text and keeps headings smaller. Minimal makes headings only a little bigger than body text.",
-      "title": "Type Scale"
+    "colors": {
+      "type": "object",
+      "title": "Choose Your Own Colors",
+      "description": "Leave empty to keep the theme's own color.",
+      "properties": {
+        "colorBackground": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's page background color, in both light and dark mode.",
+          "title": "Background Color"
+        },
+        "colorPrimary": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's main text color, in both light and dark mode.",
+          "title": "Primary Color"
+        },
+        "colorSecondary": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's secondary text color, in both light and dark mode.",
+          "title": "Secondary Color"
+        },
+        "colorMuted": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's muted text color, in both light and dark mode. Add two extra hex digits for transparency, e.g. #00000066.",
+          "title": "Muted Color"
+        },
+        "colorNav": {
+          "type": "string",
+          "format": "color",
+          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+          "description": "Overrides the theme's navigation color, in both light and dark mode.",
+          "title": "Navigation Color"
+        }
+      }
     },
     "options": {
       "type": "object",
@@ -98,48 +159,6 @@
           "type": "boolean",
           "default": true,
           "title": "Show Related Events"
-        }
-      }
-    },
-    "colors": {
-      "type": "object",
-      "title": "Choose Your Own Colors",
-      "description": "Leave empty to keep the theme's own color.",
-      "properties": {
-        "colorBackground": {
-          "type": "string",
-          "format": "color",
-          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Overrides the theme's page background color, in both light and dark mode.",
-          "title": "Background Color"
-        },
-        "colorPrimary": {
-          "type": "string",
-          "format": "color",
-          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Overrides the theme's main text color, in both light and dark mode.",
-          "title": "Primary Color"
-        },
-        "colorSecondary": {
-          "type": "string",
-          "format": "color",
-          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Overrides the theme's secondary text color, in both light and dark mode.",
-          "title": "Secondary Color"
-        },
-        "colorMuted": {
-          "type": "string",
-          "format": "color",
-          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Overrides the theme's muted text color, in both light and dark mode. Add two extra hex digits for transparency, e.g. #00000066.",
-          "title": "Muted Color"
-        },
-        "colorNav": {
-          "type": "string",
-          "format": "color",
-          "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Overrides the theme's navigation color, in both light and dark mode.",
-          "title": "Navigation Color"
         }
       }
     }

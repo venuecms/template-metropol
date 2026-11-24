@@ -20,6 +20,14 @@ describe("templateConfigOf", () => {
     ).toMatchObject({ themeId: "default", showSearch: true });
   });
 
+  it("lifts the typography group too", () => {
+    expect(
+      templateConfigOf(
+        siteWith({ typography: { fontName: "Cardo", baseSize: "Large" } }),
+      ),
+    ).toMatchObject({ fontName: "Cardo", baseSize: "Large" });
+  });
+
   it("lifts the colors group too", () => {
     expect(
       templateConfigOf(siteWith({ colors: { colorPrimary: "#ff0000" } })),
