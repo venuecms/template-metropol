@@ -1,6 +1,8 @@
 import { getEvents, getSite } from "@venuecms/sdk-next";
 import { connection } from "next/server";
 
+import { templateConfigOf } from "@/lib/utils/templateConfig";
+
 import { EventFeatured } from "@/components/EventFeatured";
 import { VenueImage } from "@/components/VenueImage";
 
@@ -20,8 +22,10 @@ export async function FeaturedEventsContent({ locale }: { locale: string }) {
   // build's: "Today" and "Tonight" depend on it.
   const now = new Date();
 
-  const templateSettings = (site?.settings?.publicSite?.template?.config ??
-    {}) as { showHeroImage?: boolean; noHeroOverlay?: boolean };
+  const templateSettings = templateConfigOf(site) as {
+    showHeroImage?: boolean;
+    noHeroOverlay?: boolean;
+  };
   const { showHeroImage, noHeroOverlay } = templateSettings;
   const webSiteSettings = site.webSites ? site.webSites[0] : undefined;
 

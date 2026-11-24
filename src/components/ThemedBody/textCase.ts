@@ -5,9 +5,10 @@
  * - `headingCase`: h1–h6, on their own and ahead of `textCase` — so a site can
  *   set everything in capitals and still keep its headings as typed.
  *
- * Values are `none` / `lowercase` / `uppercase` and `paragraphs` / `all`; the
- * schema's enumNames give them their labels in the settings form. The labels
- * themselves are accepted too, since the schema briefly stored them.
+ * The schema offers `As typed` / `lowercase` / `UPPERCASE` and `Paragraphs` /
+ * `All`, since the settings form shows enum values as they are (it has no
+ * support for enumNames). The CSS values `none` / `lowercase` / `uppercase`
+ * and `paragraphs` / `all` are accepted too, as sites saved them before.
  *
  * Unset means the template's own look: paragraphs in capitals, headings left
  * to inherit. A site that never saved these settings looks as it always has.
