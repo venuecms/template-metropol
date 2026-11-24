@@ -6,16 +6,31 @@ import { MapPin } from "lucide-react";
 import { useLocale } from "next-intl";
 import { ReactNode } from "react";
 
+import { Link } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
+/**
+ * An event's location. With `href` it links there (e.g. the event's own page)
+ * without the map pin; otherwise it links to the location's map, if it has one.
+ */
 export const LocationLink = ({
   location,
+  href,
   className,
 }: {
   location: VenueLocation;
+  href?: string;
   className?: string;
 }) => {
   const { mapLink } = location;
+
+  if (href) {
+    return (
+      <Link href={href} className={cn("text-secondary", className)}>
+        <LocationDisplay location={location} />
+      </Link>
+    );
+  }
 
   return mapLink ? (
     <a
