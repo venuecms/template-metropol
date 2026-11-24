@@ -21,9 +21,9 @@ type Range = [min: number, max: number];
 
 /** Body text size at the narrow and wide ends of the viewport range, in px. */
 const BASE_SIZES: Record<string, Range> = {
-  small: [15, 18],
+  small: [14, 16],
   medium: [16, 22],
-  large: [18, 24],
+  large: [20, 24],
 };
 
 const RATIOS: Record<string, number> = {

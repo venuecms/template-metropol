@@ -6,21 +6,34 @@ import { templateConfigOf } from "@/lib/utils/templateConfig";
 import { EventFeatured } from "@/components/EventFeatured";
 import { VenueImage } from "@/components/VenueImage";
 
-import { featuredEventsQuery } from "./featured";
+import {
+  featuredEventsQuery,
+  homepageFeaturedEvents,
+  upcomingEventsQuery,
+} from "./featured";
 
 export async function FeaturedEventsContent({ locale }: { locale: string }) {
   await connection();
 
-  const [{ data: featuredEvents }, { data: site }] = await Promise.all([
-    getEvents(featuredEventsQuery),
-    getSite(),
-  ]);
+  const [{ data: featured }, { data: upcoming }, { data: site }] =
+    await Promise.all([
+      getEvents(featuredEventsQuery),
+      getEvents(upcomingEventsQuery),
+      getSite(),
+    ]);
 
   if (!site) return null;
 
   // Read after `connection()`, so it is the request's time rather than the
-  // build's: "Today" and "Tonight" depend on it.
+  // build's: "Today" and "Tonight", and which events are promoted for being
+  // today, depend on it.
   const now = new Date();
+  const featuredEvents = homepageFeaturedEvents({
+    featured: featured?.records ?? [],
+    upcoming: upcoming?.records ?? [],
+    now,
+    timeZone: site.timeZone ?? undefined,
+  });
 
   const templateSettings = templateConfigOf(site) as {
     showHeroImage?: boolean;
@@ -41,10 +54,10 @@ export async function FeaturedEventsContent({ locale }: { locale: string }) {
           )}
         </div>
       ) : null}
-      {featuredEvents?.records.length ? (
+      {featuredEvents.length ? (
         // Spaced by the body's side padding, as the gap under each image is.
         <div className="flex flex-col gap-6 pb-16 sm:gap-12">
-          {featuredEvents.records.map((event, index) => (
+          {featuredEvents.map((event, index) => (
             <EventFeatured
               key={event.id}
               event={event}
