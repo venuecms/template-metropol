@@ -91,11 +91,13 @@ export const Event = ({
                 timeZone: site.timeZone!,
                 locale,
               })}
-              {/* The start time, set off the way the listings set it, and kept
-                apart from the date so a multi-day range still gets one. */}
-              {event.hasTime
-                ? ` • ${formatTime({ date: event.startDate, timeZone, locale })}`
-                : null}
+              {/* The start time, kept apart from the date so a multi-day
+                range still gets one. */}
+              {event.hasTime ? (
+                <span className="ml-[3ch]">
+                  {formatTime({ date: event.startDate, timeZone, locale })}
+                </span>
+              ) : null}
             </span>
             {isCancelled ? (
               <span className="text-secondary">{t("cancelled")}</span>
