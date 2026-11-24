@@ -11,7 +11,10 @@ import {
 } from "next/font/google";
 import { ReactNode } from "react";
 
-import { FILTERABLE_IMAGE_CLASS } from "@/components/VenueImage";
+import {
+  FILTERABLE_IMAGE_CLASS,
+  HELD_FILTER_CLASS,
+} from "@/components/VenueImage";
 
 import { buildThemeColorOverrideCss } from "./colors";
 import { buildTextCaseCss } from "./textCase";
@@ -72,14 +75,17 @@ const ThemeFonts = {
 /**
  * The duotone image filter for listing images, on by default and switched off
  * by `imageDuotone: false` in the template config. It reaches only images
- * that opt in through VenueImage's `filter`: the cards in a listing. Each image goes grayscale, then a layer of the primary color is
- * screened over it: black takes the primary color, white stays white, and
+ * that opt in through VenueImage's `filter`: the cards in a listing. Each image goes grayscale, then a layer of the tint color (`--tint`, the primary color unless a site picks
+ * its own) is
+ * screened over it: black takes the tint, white stays white, and
  * the grays between run from one to the other. Being CSS, it follows the
  * theme and any color override with no image processing.
  *
  * Hovering an image fades it back to full color — only where a pointer can
  * hover, so a tap on a touch screen doesn't leave it stuck in color — and the
- * fade is skipped for readers who ask for reduced motion.
+ * fade is skipped for readers who ask for reduced motion. An image marked
+ * with VenueImage's `holdFilter` keeps its tint instead: one with text set
+ * over it, such as a featured event.
  *
  * Screen lightens towards white, so the effect suits light themes; on a dark
  * one the highlights still come out white rather than the theme's background.
@@ -90,13 +96,13 @@ const imageDuotoneCss = `
     content: "";
     position: absolute;
     inset: 0;
-    background: hsla(var(--primary));
+    background: hsla(var(--tint));
     mix-blend-mode: screen;
     pointer-events: none;
   }
   @media (hover: hover) {
-    .${FILTERABLE_IMAGE_CLASS}:hover img { filter: none; }
-    .${FILTERABLE_IMAGE_CLASS}:hover::after { opacity: 0; }
+    .${FILTERABLE_IMAGE_CLASS}:not(.${HELD_FILTER_CLASS}):hover img { filter: none; }
+    .${FILTERABLE_IMAGE_CLASS}:not(.${HELD_FILTER_CLASS}):hover::after { opacity: 0; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .${FILTERABLE_IMAGE_CLASS} img { transition: filter 400ms ease; }

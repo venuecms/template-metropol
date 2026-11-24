@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDate, formatDateRange, formatTime } from "./date";
+import {
+  formatDate,
+  formatDateRange,
+  formatDateRangeParts,
+  formatTime,
+  sameDayLabel,
+} from "./date";
 
 const timeZone = "Europe/Bratislava";
 
@@ -12,7 +18,7 @@ describe("formatDate", () => {
         timeZone,
         template: "EEEE d MMMM yyyy",
       }),
-    ).toBe("Monday 16 November 2026 • 7pm");
+    ).toBe("Monday 16 November 2026 7pm");
   });
 
   it("writes Slovak dates with ordinal days, genitive months and 24h time", () => {
@@ -23,7 +29,7 @@ describe("formatDate", () => {
         template: "EEEE d MMMM yyyy",
         locale: "sk",
       }),
-    ).toBe("pondelok, 16. novembra 2026 • 19:30");
+    ).toBe("pondelok, 16. novembra 2026 19:30");
   });
 
   it("localizes a date-only Slovak template", () => {
@@ -101,5 +107,113 @@ describe("formatTime", () => {
         locale: "sk",
       }),
     ).toBe("20:00");
+  });
+
+  it("writes a Swedish time after kl. on the 24-hour clock", () => {
+    expect(
+      formatTime({ date: "2026-11-16T21:00:00+01:00", timeZone, locale: "sv" }),
+    ).toBe("kl. 21");
+    expect(
+      formatTime({ date: "2026-11-16T21:30:00+01:00", timeZone, locale: "sv" }),
+    ).toBe("kl. 21:30");
+  });
+});
+
+describe("formatDate in Swedish", () => {
+  it("writes Swedish names and a kl. time", () => {
+    expect(
+      formatDate({
+        date: "2026-11-16T21:00:00+01:00",
+        timeZone,
+        template: "EEEE d MMMM yyyy",
+        locale: "sv",
+      }),
+    ).toBe("måndag 16 november 2026 kl. 21");
+  });
+});
+
+describe("formatDateRangeParts", () => {
+  it("keeps a single-day event's time apart from its date", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-16T21:30:00+01:00",
+        end: "2026-11-16T23:00:00+01:00",
+        timeZone,
+        withTime: true,
+        locale: "sv",
+      }),
+    ).toEqual({ date: "måndag 16 november 2026", time: "kl. 21:30" });
+  });
+
+  it("gives a multi-day range no time", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-16T21:30:00+01:00",
+        end: "2026-11-18T23:00:00+01:00",
+        timeZone,
+        withTime: true,
+      }).time,
+    ).toBeNull();
+  });
+});
+
+describe("sameDayLabel", () => {
+  // Midday in Bratislava on 24 November.
+  const now = new Date("2026-11-24T12:00:00+01:00");
+
+  it("reads a start from 5pm today as tonight", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T17:00:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBe("tonight");
+  });
+
+  it("reads a start before 5pm today as today", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T16:59:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBe("today");
+  });
+
+  it("reads an event with no time set as today", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T20:00:00+01:00",
+        hasTime: false,
+        now,
+        timeZone,
+      }),
+    ).toBe("today");
+  });
+
+  it("gives nothing for another day, so the date shows", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-25T20:00:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBeNull();
+  });
+
+  it("judges the day in the venue's zone, not UTC", () => {
+    // 00:30 on the 25th in Bratislava is still the 24th in UTC.
+    expect(
+      sameDayLabel({
+        start: "2026-11-25T00:30:00+01:00",
+        hasTime: true,
+        now: new Date("2026-11-24T23:00:00Z"),
+        timeZone,
+      }),
+    ).toBe("today");
   });
 });

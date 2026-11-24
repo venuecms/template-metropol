@@ -3,75 +3,90 @@ import { NextIntlClientProvider } from "next-intl";
 import { renderToReadableStream } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import messages from "@/lib/i18n/dictionaries/en.json";
+
 import { EventFeatured } from "./index";
 
-/**
- * The nested-anchor guard, pinned where it lives.
- *
- * This excerpt is wrapped in a `<Link>` to the event, and every list component
- * a listing block draws renders links of its own — so resolving a listing here
- * would put an `<a>` inside an `<a>`. That is invalid HTML the browser
- * reparses and React reports as a hydration mismatch, and it would also cost an
- * extra endpoint read on the home page for records nobody could page through.
- * The guard is one identifier at two call sites (`renderedStyles`, not
- * `contentComponents`), and switching it to match the sibling components would
- * type-check.
- *
- * Observable the same way ProfileCompact's is: resolving a listing is a
- * request, and the SDK's handler calls `connection()` before fetching, which
- * throws outside a Next request scope. A render that reports no error is a
- * render in which no listing handler was ever entered.
- */
 const siteId = "site-id";
 
 const site: Site = {
   id: siteId,
-  timeZone: "Europe/Berlin",
+  timeZone: "Europe/Bratislava",
   settings: {},
 };
 
-const eventWithListingInBody = (): VenueEvent =>
+const featuredEvent = (
+  startDate: string,
+  overrides: Partial<VenueEvent> = {},
+): VenueEvent =>
   ({
     id: "event-id",
     siteId,
     slug: "a-gig",
-    startDate: "2026-09-01T20:00:00.000Z",
-    endDate: "2026-09-01T23:00:00.000Z",
+    startDate,
+    endDate: startDate,
     hasTime: true,
     publishState: "PUBLISHED",
     image: null,
     artists: [],
-    localizedContent: [
-      {
-        siteId,
-        locale: "en",
-        title: "A Featured Gig",
-        contentJSON: {
-          type: "doc",
-          content: [{ type: "eventListing", attrs: { limit: 3 } }],
-        },
-      },
-    ],
+    localizedContent: [{ siteId, locale: "en", title: "A Featured Gig" }],
+    ...overrides,
   }) as unknown as VenueEvent;
 
-describe("EventFeatured", () => {
-  it("does not resolve listing blocks inside the linked excerpt", async () => {
-    const errors: string[] = [];
+const render = async (event: VenueEvent, now?: Date) => {
+  const stream = await renderToReadableStream(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <EventFeatured event={event} site={site} now={now} />
+    </NextIntlClientProvider>,
+  );
+  await stream.allReady;
 
-    const stream = await renderToReadableStream(
-      <NextIntlClientProvider locale="en" messages={{}}>
-        <EventFeatured event={eventWithListingInBody()} site={site} />
-      </NextIntlClientProvider>,
-      {
-        onError: (error) => {
-          errors.push(String(error));
-        },
-      },
-    );
-    await stream.allReady;
-    const html = await new Response(stream).text();
+  return new Response(stream).text();
+};
+
+// Midday in Bratislava on 24 November.
+const now = new Date("2026-11-24T12:00:00+01:00");
+
+describe("EventFeatured", () => {
+  it("links the title to the event", async () => {
+    const html = await render(featuredEvent("2026-11-28T20:00:00+01:00"), now);
 
     expect(html).toContain("A Featured Gig");
-    expect(errors).toEqual([]);
+    expect(html).toContain('href="/en/events/a-gig"');
+  });
+
+  it("says Tonight for an evening start today", async () => {
+    const html = await render(featuredEvent("2026-11-24T20:00:00+01:00"), now);
+
+    expect(html).toContain(">Tonight<");
+  });
+
+  it("says Today for a start before 5pm today", async () => {
+    const html = await render(featuredEvent("2026-11-24T14:00:00+01:00"), now);
+
+    expect(html).toContain(">Today<");
+  });
+
+  it("shows the date for any other day", async () => {
+    const html = await render(featuredEvent("2026-11-28T20:00:00+01:00"), now);
+
+    expect(html).toContain("Saturday 28 November");
+    expect(html).not.toContain(">Tonight<");
+  });
+
+  it("shows the date when it has no request time to judge by", async () => {
+    const html = await render(featuredEvent("2026-11-24T20:00:00+01:00"));
+
+    expect(html).toContain("Tuesday 24 November");
+  });
+
+  it("says Cancelled in place of the date", async () => {
+    const html = await render(
+      featuredEvent("2026-11-24T20:00:00+01:00", { publishState: "CANCELLED" }),
+      now,
+    );
+
+    expect(html).toContain(">Cancelled<");
+    expect(html).not.toContain(">Tonight<");
   });
 });

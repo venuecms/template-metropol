@@ -1,6 +1,5 @@
 import {
   type Site,
-  VenueContent,
   type Event as VenueEvent,
   getLocalizedContent,
 } from "@venuecms/sdk-next";
@@ -11,115 +10,118 @@ import { cn } from "@/lib/utils";
 
 import { VenueImage } from "@/components/VenueImage";
 
-import { LocationLink } from "../LocationLink";
-import { TicketList } from "../TicketList";
-import { ColumnLeft, ColumnRight, TwoColumnLayout } from "../layout";
-import { formatDateRange } from "../utils";
-import { proseHandlers } from "../utils/handlers";
-import { renderedStyles } from "../utils/styles";
+import { formatDateRangeParts, sameDayLabel } from "../utils";
+import { FillScreen } from "./FillScreen";
 
+/**
+ * A featured event on the homepage: the image filling the screen below the
+ * header, in the listings' duotone, with the date and title centred over it
+ * in white. The whole card links to the event.
+ *
+ * An event starting today reads "Tonight" from 5pm and "Today" before, in the
+ * venue's zone, in place of its date. That needs `now`, which only a request
+ * can supply; without it the date shows.
+ */
 export const EventFeatured = ({
   event,
   site,
+  now,
+  first = true,
   className,
 }: {
   event: VenueEvent;
   site: Site;
+  /** The request's time, for "Today" and "Tonight". */
+  now?: Date;
+  /**
+   * Whether this is the first featured event, directly under the header: it
+   * fills the screen below the header, and any after it fill a screen each.
+   */
+  first?: boolean;
   className?: string;
 }) => {
   const locale = useLocale();
   const t = useTranslations("events");
-  const { location } = event;
 
   const { content } = getLocalizedContent(event?.localizedContent, locale);
   const isCancelled = event.publishState === "CANCELLED";
+  const timeZone = site.timeZone ?? undefined;
+  const displayImage =
+    event.image ??
+    event.relations?.parents?.[0]?.image ??
+    event.artists?.find((artist) => !!artist.profile?.image)?.profile.image;
+
+  const dayLabel = now
+    ? sameDayLabel({
+        start: event.startDate,
+        hasTime: event.hasTime,
+        now,
+        timeZone,
+      })
+    : null;
+
+  const { date, time } = formatDateRangeParts({
+    start: event.startDate,
+    end: event.endDate,
+    withTime: event.hasTime,
+    template: "EEEE d MMMM",
+    timeZone: site.timeZone!,
+    locale,
+  });
+
+  const label = isCancelled ? (
+    t("cancelled")
+  ) : dayLabel ? (
+    t(dayLabel)
+  ) : (
+    <>
+      {date}
+      {/* Spaced the way the listings space it. */}
+      {time ? <span className="ml-[3ch]">{time}</span> : null}
+    </>
+  );
 
   return (
-    <>
-      <TwoColumnLayout className={cn("hidden lg:grid", className)}>
-        <ColumnLeft>
-          <Link href={`/events/${event.slug}`}>
-            <VenueImage image={event.image} />
-          </Link>
-        </ColumnLeft>
-
-        <ColumnRight className="max-w-4xl gap-16">
-          <div className="text-secondary">
-            <Link href={`/events/${event.slug}`}>
-              {formatDateRange({
-                start: event.startDate,
-                end: event.endDate,
-                withTime: event.hasTime,
-                timeZone: site.timeZone!,
-                locale,
-              })}
-            </Link>
-          </div>
-          <div className="text-xl text-primary">
-            <Link href={`/events/${event.slug}`}>{content.title}</Link>
-            {location ? (
-              <LocationLink className="pt-2 text-2xl" location={location} />
-            ) : null}
-          </div>
-          {isCancelled ? (
-            <div className="text-secondary">{t("cancelled")}</div>
-          ) : null}
-          {!isCancelled && event.tickets ? (
-            <TicketList tickets={event.tickets} />
-          ) : null}
-          <Link href={`/events/${event.slug}`}>
-            {/*
-              Plain `renderedStyles`, not `contentComponents`: this excerpt is
-              wrapped in a Link, and every list component a listing block draws
-              renders links of its own. Resolving a listing here would put an
-              <a> inside an <a> — invalid HTML the browser reparses and React
-              reports as a hydration mismatch — and would cost an extra endpoint
-              read on the home page for records nobody could page through.
-              ProfileCompact renders a bio the same way, for the same reason.
-            */}
-            <VenueContent
-              className="flex max-w-xl flex-col gap-6"
-              content={content}
-              contentStyles={renderedStyles}
-              components={proseHandlers}
-            />
-          </Link>
-        </ColumnRight>
-      </TwoColumnLayout>
-      <div className="flex lg:hidden">
-        <div className="flex flex-col gap-8">
-          <div>
-            <div className="text-secondary">
-              <Link href={`/events/${event.slug}`}>
-                {formatDateRange({
-                  start: event.startDate,
-                  end: event.endDate,
-                  withTime: event.hasTime,
-                  timeZone: site.timeZone!,
-                  locale,
-                })}
-              </Link>
-            </div>
-            {location ? <LocationLink location={location} /> : null}
-          </div>
-          <div className="text-xl">
-            <Link href={`/events/${event.slug}`}>{content.title}</Link>
-          </div>
-          <Link href={`/events/${event.slug}`}>
-            <VenueImage image={event.image} />
-          </Link>
-          <div className="text-xl">
-            <Link href={`/events/${event.slug}`}>
-              {/* Inside a Link, as above. */}
-              <VenueContent
-                content={content}
-                contentStyles={renderedStyles}
-                components={proseHandlers}
-              />
-            </Link>
-          </div>
+    <FillScreen fromTop={first} className={className}>
+      <Link
+        href={`/events/${event.slug}`}
+        // Clips the image's hover zoom to the box.
+        className="group relative block h-full overflow-hidden motion-safe:animate-slide-up"
+      >
+        {/* Scaled as one with its duotone layer, so the tint grows with the
+            picture; skipped for readers who ask for reduced motion. */}
+        <div className="h-full motion-safe:transition-transform motion-safe:duration-[2000ms] motion-safe:group-hover:scale-105">
+          <VenueImage
+            image={displayImage}
+            aspect="fill"
+            filter
+            // The title is set against the tint, so it stays under the pointer.
+            holdFilter
+            withCredit={false}
+            props={{ sizes: "100vw" }}
+          />
         </div>
-      </div>
-    </>
+        {/* A screen over the picture so the title reads against it, in the
+            same tint as the duotone. `--tint` carries its own alpha, so the
+            opacity goes on the layer instead of a `/70` modifier. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
+        />
+        {/* Over the image, and above its duotone layer. A soft shadow keeps the
+          white legible where the picture runs to white itself. */}
+        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center text-white [text-shadow:0_1px_16px_rgb(0_0_0/0.25)] lg:gap-6">
+          <span className="text-sm tracking-[0.2em]">{label}</span>
+          <h2
+            className={cn(
+              "max-w-5xl text-balance text-xl lg:text-xxl",
+              isCancelled && "line-through",
+            )}
+          >
+            {content.title}
+          </h2>
+        </div>
+      </Link>
+    </FillScreen>
   );
 };

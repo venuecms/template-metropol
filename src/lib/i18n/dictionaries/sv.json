@@ -16,6 +16,8 @@
     "starts": "Starttid",
     "ends": "Sluttid",
     "map": "karta",
+    "today": "Idag",
+    "tonight": "Ikväll",
     "related_events": "Du kanske också gillar"
   },
   "shop": {

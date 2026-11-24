@@ -1,50 +1,16 @@
 import { EventsList } from "@/components/EventList";
-import {
-  ColumnLeft,
-  ColumnRight,
-  FullWidthLayout,
-  TwoColumnLayout,
-} from "@/components/layout";
+import { FullWidthLayout } from "@/components/layout";
 import { Skeleton } from "@/components/ui/Input/Skeleton";
 
+/**
+ * Mirrors a featured event: the screen below the header, less the side
+ * padding's width at the bottom. Assumes the desktop header's 5rem, as the
+ * loaded image does before it measures.
+ */
 export function FeaturedEventsSkeleton() {
   return (
     <div className="flex flex-col pb-16">
-      {/* Desktop layout */}
-      <TwoColumnLayout className="hidden lg:grid">
-        <ColumnLeft>
-          <Skeleton className="aspect-square" />
-        </ColumnLeft>
-        <ColumnRight className="max-w-4xl gap-16">
-          <Skeleton className="w-48" />
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-6 w-3/4" />
-            <Skeleton className="h-5 w-1/2" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Skeleton />
-            <Skeleton />
-            <Skeleton className="w-2/3" />
-          </div>
-        </ColumnRight>
-      </TwoColumnLayout>
-
-      {/* Mobile layout */}
-      <div className="flex lg:hidden">
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-1">
-            <Skeleton className="w-48" />
-            <Skeleton className="w-32" />
-          </div>
-          <Skeleton className="h-6 w-3/4" />
-          <Skeleton className="aspect-square" />
-          <div className="flex flex-col gap-2">
-            <Skeleton />
-            <Skeleton />
-            <Skeleton className="w-2/3" />
-          </div>
-        </div>
-      </div>
+      <Skeleton className="h-[calc(100svh-6.5rem)] min-h-80 w-full sm:h-[calc(100svh-8rem)]" />
     </div>
   );
 }

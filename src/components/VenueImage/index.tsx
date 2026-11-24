@@ -1,5 +1,7 @@
 import { MediaItem, VenueImage as SdkVenueImage } from "@venuecms/sdk-next";
 
+import { cn } from "@/lib/utils";
+
 /**
  * The SDK image knows `square` and `video` by name and takes anything else as
  * the class itself, so other ratios are mapped to their class here — spelled
@@ -9,12 +11,21 @@ const ASPECTS = {
   square: "aspect-square",
   video: "aspect-video",
   classic: "aspect-[4/3]",
+  // No ratio: the image fills whatever height its container gives it,
+  // cropped to cover around its focal point.
+  fill: "h-full",
 };
 
 export type VenueImageAspect = keyof typeof ASPECTS;
 
 /** Marks an image the site-wide duotone filter applies to; see ThemedBody. */
 export const FILTERABLE_IMAGE_CLASS = "venue-image";
+
+/**
+ * Marks a filtered image that keeps its duotone on hover rather than fading to
+ * full color, for an image with text set over it; see ThemedBody.
+ */
+export const HELD_FILTER_CLASS = "venue-image-held";
 
 export const VenueImage = ({
   className,
@@ -23,6 +34,7 @@ export const VenueImage = ({
   props,
   filter = false,
   withCredit = true,
+  holdFilter = false,
 }: {
   className?: string;
   image?: Partial<MediaItem>;
@@ -30,9 +42,9 @@ export const VenueImage = ({
   props?: object;
   /**
    * Whether the site's image filter, when switched on, reaches this image.
-   * Only listings opt in — the cards in an event, product or artist list — so
-   * a record's own page, the featured event, the hero and the logo all show
-   * their images in full color.
+   * Listings opt in — the cards in an event, product or artist list — and
+   * the homepage's featured events, so a record's own page, the hero and the
+   * logo all show their images in full color.
    */
   filter?: boolean;
   /**
@@ -41,6 +53,12 @@ export const VenueImage = ({
    * the cards. The image's own page still credits it.
    */
   withCredit?: boolean;
+  /**
+   * Whether a filtered image keeps its duotone on hover. Off by default, so a
+   * listing card fades to color under the pointer; an image with text over it
+   * holds the tint the text was set against.
+   */
+  holdFilter?: boolean;
 }) => {
   const img = (
     <SdkVenueImage
@@ -56,7 +74,15 @@ export const VenueImage = ({
       {filter ? (
         // The filter's tint is a layer over the image, so it needs a box of
         // its own to sit in; `isolate` keeps its blend to this image alone.
-        <div className={`${FILTERABLE_IMAGE_CLASS} relative isolate`}>
+        <div
+          className={cn(
+            FILTERABLE_IMAGE_CLASS,
+            "relative isolate",
+            // Passes a filled image's height down through the tint's box.
+            aspect === "fill" && "h-full",
+            holdFilter && HELD_FILTER_CLASS,
+          )}
+        >
           {img}
         </div>
       ) : (

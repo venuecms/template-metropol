@@ -4,15 +4,21 @@ import { connection } from "next/server";
 import { EventFeatured } from "@/components/EventFeatured";
 import { VenueImage } from "@/components/VenueImage";
 
+import { featuredEventsQuery } from "./featured";
+
 export async function FeaturedEventsContent({ locale }: { locale: string }) {
   await connection();
 
   const [{ data: featuredEvents }, { data: site }] = await Promise.all([
-    getEvents({ limit: 6, featured: true }),
+    getEvents(featuredEventsQuery),
     getSite(),
   ]);
 
   if (!site) return null;
+
+  // Read after `connection()`, so it is the request's time rather than the
+  // build's: "Today" and "Tonight" depend on it.
+  const now = new Date();
 
   const templateSettings = (site?.settings?.publicSite?.template?.config ??
     {}) as { showHeroImage?: boolean; noHeroOverlay?: boolean };
@@ -32,13 +38,15 @@ export async function FeaturedEventsContent({ locale }: { locale: string }) {
         </div>
       ) : null}
       {featuredEvents?.records.length ? (
-        <div className="flex flex-col pb-16">
-          {featuredEvents.records.map((event) => (
+        // Spaced by the body's side padding, as the gap under each image is.
+        <div className="flex flex-col gap-6 pb-16 sm:gap-12">
+          {featuredEvents.records.map((event, index) => (
             <EventFeatured
               key={event.id}
               event={event}
               site={site}
-              className="lg:pb-64"
+              now={now}
+              first={index === 0}
             />
           ))}
         </div>
