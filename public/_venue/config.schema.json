@@ -4,32 +4,7 @@
   "properties": {
     "themeId": {
       "type": "string",
-      "enum": [
-        "default",
-        "space",
-        "larry",
-        "darkGold",
-        "hojden",
-        "ahmed",
-        "frim",
-        "kvast",
-        "bronze",
-        "queen",
-        "moss",
-        "slate",
-        "hotPink",
-        "helloDarkness",
-        "goldenCircle1",
-        "goldenCircle2",
-        "newLand",
-        "hundredK",
-        "silverGrey1",
-        "silverGrey2",
-        "darkGrey1",
-        "eroPink",
-        "blackOnWhite",
-        "darkGreyCM"
-      ],
+      "enum": ["default", "hundredK", "blackOnWhite"],
       "default": "default",
       "title": "Theme"
     },
@@ -44,7 +19,9 @@
         "IBM_Plex_Mono",
         "EB_Garamond",
         "Inter",
-        "Open_Sans"
+        "Open_Sans",
+        "Rethink_Sans",
+        "Cardo"
       ],
       "default": "jost",
       "title": "Font"
@@ -72,6 +49,14 @@
       "default": "none",
       "description": "Sets the letter case of headings and titles, whatever case they were typed in. Takes priority over Text Case.",
       "title": "Heading Case"
+    },
+    "typeScale": {
+      "type": "string",
+      "enum": ["default", "compact", "minimal"],
+      "enumNames": ["Default", "Compact", "Minimal"],
+      "default": "default",
+      "description": "The size of your text and how much bigger headings and titles are than body text. Default makes headings large and dramatic. Compact uses slightly smaller body text and keeps headings smaller. Minimal makes headings only a little bigger than body text.",
+      "title": "Type Scale"
     },
     "showSearch": {
       "type": "boolean",
@@ -148,7 +133,7 @@
       "type": "string",
       "format": "color",
       "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "The color of the duotone on listing images and of the screen over featured events on the home page. Leave empty to use the primary color.",
+      "description": "Used on listing images and homepage featured events. Leave empty to use the primary text color.",
       "title": "Image Tint Color"
     }
   }
