@@ -26,6 +26,7 @@ export default {
         muted: "hsla(var(--muted))",
         "text-3": "hsla(var(--text-3))",
         nav: "hsla(var(--nav))",
+        tint: "hsla(var(--tint))",
         "button-background": "hsla(var(--button-background))",
         error: "hsla(var(--error))",
         overlay: "hsla(var(--overlay))",

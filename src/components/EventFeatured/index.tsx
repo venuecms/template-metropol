@@ -101,6 +101,13 @@ export const EventFeatured = ({
             props={{ sizes: "100vw" }}
           />
         </div>
+        {/* A screen over the picture so the title reads against it, in the
+            same tint as the duotone. `--tint` carries its own alpha, so the
+            opacity goes on the layer instead of a `/70` modifier. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
+        />
         {/* Over the image, and above its duotone layer. A soft shadow keeps the
           white legible where the picture runs to white itself. */}
         <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center text-white [text-shadow:0_1px_16px_rgb(0_0_0/0.25)] lg:gap-6">

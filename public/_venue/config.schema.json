@@ -100,7 +100,7 @@
     "imageDuotone": {
       "type": "boolean",
       "default": true,
-      "description": "Tints the images in event, product and artist listings in your primary color: shadows take the color, highlights stay white. Individual pages keep their images in full color. On unless switched off.",
+      "description": "Tints the images in event, product and artist listings in your Image Tint Color (your primary color unless you pick one): shadows take the color, highlights stay white. Individual pages keep their images in full color. On unless switched off.",
       "title": "Duotone Listing Images"
     },
     "showRelatedEvents": {
@@ -143,6 +143,13 @@
       "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
       "description": "Overrides the theme's navigation color, in both light and dark mode. Leave empty to keep the theme's own color.",
       "title": "Navigation Color"
+    },
+    "colorTint": {
+      "type": "string",
+      "format": "color",
+      "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "description": "The color of the duotone on listing images and of the screen over featured events on the home page. Leave empty to use the primary color.",
+      "title": "Image Tint Color"
     }
   }
 }

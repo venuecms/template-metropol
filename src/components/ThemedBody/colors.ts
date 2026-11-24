@@ -18,6 +18,7 @@ export const THEME_COLOR_VARIABLES = {
   colorSecondary: "--secondary",
   colorMuted: "--muted",
   colorNav: "--nav",
+  colorTint: "--tint",
 } as const;
 
 export type ThemeColorKey = keyof typeof THEME_COLOR_VARIABLES;
@@ -34,9 +35,14 @@ export type ThemeColorVariable = (typeof THEME_COLOR_VARIABLES)[ThemeColorKey];
  * So when a default-theme site overrides anything, the rest of the palette is
  * pinned to the light branch and the page stays coherent in both schemes.
  *
+ * `--tint` is left out: it follows `--primary`, so pinning `--primary` pins
+ * it too, and a fixed value here would stop it following a chosen primary.
+ *
  * `colors.test.ts` pins these values to globals.css so the two cannot drift.
  */
-export const DEFAULT_THEME_LIGHT_COLORS: Record<ThemeColorVariable, string> = {
+export const DEFAULT_THEME_LIGHT_COLORS: Partial<
+  Record<ThemeColorVariable, string>
+> = {
   "--background": "52, 32%, 94%, 1",
   "--primary": "50, 1%, 10%, 1",
   "--secondary": "0, 0%, 25%, 1",
