@@ -18,7 +18,8 @@
     "map": "karta",
     "today": "Idag",
     "tonight": "Ikväll",
-    "related_events": "Du kanske också gillar"
+    "related_events": "Du kanske också gillar",
+    "part_of": "Del av <link>{title}</link>"
   },
   "shop": {
     "shop": "Butik",

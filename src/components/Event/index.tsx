@@ -18,10 +18,16 @@ import {
   detailBodyComponents,
 } from "@/components/ListingBlock";
 import { ProfilesGrid } from "@/components/ProfilesGrid";
+import {
+  SiteIcon,
+  type SiteIconChoice,
+  siteIconOf,
+} from "@/components/SiteIcon";
 import { VenueImage } from "@/components/VenueImage";
 
 import { TicketList } from "../TicketList";
 import { formatDate, formatDateRange, formatTime } from "../utils";
+import { SubEvents } from "./SubEvents";
 import { WhileUpcoming } from "./WhileUpcoming";
 
 /**
@@ -64,6 +70,13 @@ export const Event = ({
     event.image ??
     event.relations?.parents?.[0]?.image ??
     artists?.find((artist) => !!artist.profile?.image)?.profile.image;
+
+  // A sub-event names the event it is part of. The first parent, as the
+  // image fallback above takes it.
+  const parent = event.relations?.parents?.[0];
+  const parentTitle = parent ? titleOf(parent.localizedContent, locale) : null;
+
+  const icon = siteIconOf(site);
 
   const eventDate = (template: string) =>
     formatDateRange({
@@ -145,12 +158,12 @@ export const Event = ({
                 short, and stacked they read as one long block. */}
             <div className="grid grid-cols-2 gap-8 text-xs sm:grid-cols-3">
               {location ? (
-                <Detail>
+                <Detail icon={icon}>
                   <EventLocation location={location} />
                 </Detail>
               ) : null}
               {event.hasTime ? (
-                <Detail>
+                <Detail icon={icon}>
                   <EventTimes
                     start={event.startDate}
                     end={event.endDate}
@@ -161,17 +174,48 @@ export const Event = ({
             </div>
           </div>
 
-          <VenueContent
-            // The opening paragraph a step up, as a lead-in to the rest. Its
-            // selector outranks the text-xs each paragraph carries.
-            className="flex flex-col gap-6 text-xs [animation-delay:160ms] motion-safe:animate-slide-up lg:order-1 [&>p:first-of-type]:text-sm"
-            content={content}
-            contentStyles={detailBodyComponents}
-            components={contentHandlers}
-            searchParams={searchParams}
-          />
+          <div
+            className="flex flex-col gap-6 motion-safe:animate-slide-up lg:order-1"
+            style={stagger(2)}
+          >
+            <VenueContent
+              // The opening paragraph a step up, as a lead-in to the rest. Its
+              // selector outranks the text-xs each paragraph carries.
+              className="flex flex-col gap-6 text-xs [&>p:first-of-type]:text-sm"
+              content={content}
+              contentStyles={detailBodyComponents}
+              components={contentHandlers}
+              searchParams={searchParams}
+            />
+            {parent && parentTitle ? (
+              <p className="flex gap-2 text-xs text-secondary">
+                <SiteIcon icon={icon} className="text-icon" />
+                <span>
+                  {t.rich("part_of", {
+                    title: parentTitle,
+                    link: (chunks) => (
+                      <Link
+                        href={`/events/${parent.slug}`}
+                        className="hover:brightness-150"
+                      >
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </span>
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
+
+      {event.relations?.children?.length ? (
+        // Its own boundary: each sub-event is read in full, and the parent's
+        // own content should not wait on those reads.
+        <Suspense fallback={null}>
+          <SubEvents event={event} site={site} />
+        </Suspense>
+      ) : null}
 
       {artists.length ? (
         // The artists page's grid, so an artist looks the same wherever
@@ -189,16 +233,41 @@ export const Event = ({
 };
 
 /**
+ * A record's title in `locale`, or in English when it has none in that
+ * language, so an untranslated title still reads rather than vanishing.
+ */
+const titleOf = (
+  localizedContent: { locale: string; title?: string | null }[],
+  locale: string,
+) =>
+  [locale, "en"]
+    .map(
+      (candidate) =>
+        localizedContent.find((content) => content.locale === candidate)?.title,
+    )
+    .find(Boolean) ?? null;
+
+/**
  * The delay for the nth section of the page sliding up, so the sections come
  * in one after another in reading order, as the homepage grid's cards do.
- * The description takes step 2 as a class instead (160ms): VenueContent
- * passes no style through.
  */
 const stagger = (step: number) => ({ animationDelay: `${step * 80}ms` });
 
-/** One of the facts under the image. */
-const Detail = ({ children }: { children: ReactNode }) => (
-  <div className="min-w-0 text-primary">{children}</div>
+/**
+ * One of the facts under the image, led by the site's icon when it has one
+ * (the Site Icon Style setting), in the Site Icon Color.
+ */
+const Detail = ({
+  icon,
+  children,
+}: {
+  icon: SiteIconChoice;
+  children: ReactNode;
+}) => (
+  <div className="flex min-w-0 gap-2 text-primary">
+    <SiteIcon icon={icon} className="text-icon" />
+    <div className="min-w-0">{children}</div>
+  </div>
 );
 
 const EventLocation = ({ location }: { location: LocationSlim }) => {

@@ -18,7 +18,8 @@
     "map": "Karte",
     "today": "Heute",
     "tonight": "Heute Abend",
-    "related_events": "Das könnte dir auch gefallen"
+    "related_events": "Das könnte dir auch gefallen",
+    "part_of": "Teil von <link>{title}</link>"
   },
   "shop": {
     "shop": "Shop",
