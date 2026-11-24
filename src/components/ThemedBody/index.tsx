@@ -11,7 +11,10 @@ import {
 } from "next/font/google";
 import { ReactNode } from "react";
 
-import { FILTERABLE_IMAGE_CLASS } from "@/components/VenueImage";
+import {
+  FILTERABLE_IMAGE_CLASS,
+  HELD_FILTER_CLASS,
+} from "@/components/VenueImage";
 
 import { buildThemeColorOverrideCss } from "./colors";
 import { buildTextCaseCss } from "./textCase";
@@ -79,7 +82,9 @@ const ThemeFonts = {
  *
  * Hovering an image fades it back to full color — only where a pointer can
  * hover, so a tap on a touch screen doesn't leave it stuck in color — and the
- * fade is skipped for readers who ask for reduced motion.
+ * fade is skipped for readers who ask for reduced motion. An image marked
+ * with VenueImage's `holdFilter` keeps its tint instead: one with text set
+ * over it, such as a featured event.
  *
  * Screen lightens towards white, so the effect suits light themes; on a dark
  * one the highlights still come out white rather than the theme's background.
@@ -95,8 +100,8 @@ const imageDuotoneCss = `
     pointer-events: none;
   }
   @media (hover: hover) {
-    .${FILTERABLE_IMAGE_CLASS}:hover img { filter: none; }
-    .${FILTERABLE_IMAGE_CLASS}:hover::after { opacity: 0; }
+    .${FILTERABLE_IMAGE_CLASS}:not(.${HELD_FILTER_CLASS}):hover img { filter: none; }
+    .${FILTERABLE_IMAGE_CLASS}:not(.${HELD_FILTER_CLASS}):hover::after { opacity: 0; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .${FILTERABLE_IMAGE_CLASS} img { transition: filter 400ms ease; }

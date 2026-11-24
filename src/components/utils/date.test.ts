@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDate, formatDateRange, formatTime } from "./date";
+import { formatDate, formatDateRange, formatTime, sameDayLabel } from "./date";
 
 const timeZone = "Europe/Bratislava";
 
@@ -101,5 +101,66 @@ describe("formatTime", () => {
         locale: "sk",
       }),
     ).toBe("20:00");
+  });
+});
+
+describe("sameDayLabel", () => {
+  // Midday in Bratislava on 24 November.
+  const now = new Date("2026-11-24T12:00:00+01:00");
+
+  it("reads a start from 5pm today as tonight", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T17:00:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBe("tonight");
+  });
+
+  it("reads a start before 5pm today as today", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T16:59:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBe("today");
+  });
+
+  it("reads an event with no time set as today", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-24T20:00:00+01:00",
+        hasTime: false,
+        now,
+        timeZone,
+      }),
+    ).toBe("today");
+  });
+
+  it("gives nothing for another day, so the date shows", () => {
+    expect(
+      sameDayLabel({
+        start: "2026-11-25T20:00:00+01:00",
+        hasTime: true,
+        now,
+        timeZone,
+      }),
+    ).toBeNull();
+  });
+
+  it("judges the day in the venue's zone, not UTC", () => {
+    // 00:30 on the 25th in Bratislava is still the 24th in UTC.
+    expect(
+      sameDayLabel({
+        start: "2026-11-25T00:30:00+01:00",
+        hasTime: true,
+        now: new Date("2026-11-24T23:00:00Z"),
+        timeZone,
+      }),
+    ).toBe("today");
   });
 });
