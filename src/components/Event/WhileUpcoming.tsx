@@ -5,7 +5,8 @@ import type { ReactNode } from "react";
 import { isPastEvent } from "./past";
 
 /**
- * Renders its children only while the event is not yet over.
+ * Renders its children only while the event is not yet over, and `past`
+ * (nothing, unless given) once it is.
  *
  * The event page is prerendered, so whether it is past can only be told at
  * request time: this reads the clock behind `connection()`, and must sit in a
@@ -14,11 +15,13 @@ import { isPastEvent } from "./past";
 export async function WhileUpcoming({
   event,
   children,
+  past = null,
 }: {
   event: Pick<Event, "startDate" | "endDate">;
   children: ReactNode;
+  past?: ReactNode;
 }) {
   await connection();
 
-  return isPastEvent(event) ? null : children;
+  return isPastEvent(event) ? past : children;
 }
