@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Link } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { templateConfigOf } from "@/lib/utils/templateConfig";
 
 import { VenueImage } from "@/components/VenueImage";
 
@@ -45,6 +46,9 @@ export const EventFeatured = ({
 
   const { content } = getLocalizedContent(event?.localizedContent, locale);
   const isCancelled = event.publishState === "CANCELLED";
+  // `showFeaturedOverlay` in public/_venue/config.schema.json. On unless set
+  // to `false`, so sites whose config predates the setting keep the overlay.
+  const showOverlay = templateConfigOf(site).showFeaturedOverlay !== false;
   const timeZone = site.timeZone ?? undefined;
   const displayImage =
     event.image ??
@@ -104,10 +108,12 @@ export const EventFeatured = ({
         {/* A screen over the picture so the title reads against it, in the
             same tint as the duotone. `--tint` carries its own alpha, so the
             opacity goes on the layer instead of a `/70` modifier. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
-        />
+        {showOverlay ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
+          />
+        ) : null}
         {/* Over the image, and above its duotone layer. A soft shadow in the tint keeps
           the white legible where the picture runs to white itself. */}
         <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-6 text-center text-white [text-shadow:0_1px_16px_color-mix(in_srgb,hsla(var(--tint))_25%,transparent)] lg:gap-6">

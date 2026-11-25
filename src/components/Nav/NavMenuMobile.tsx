@@ -31,7 +31,7 @@ export const NavMenuMobile = ({
           </Dialog.Trigger>
 
           <Dialog.Portal>
-            <Dialog.Overlay className="fixed left-0 top-0 flex h-screen w-screen overflow-y-auto bg-background">
+            <Dialog.Overlay className="fixed left-0 top-0 z-50 flex h-screen w-screen overflow-y-auto bg-background">
               <Dialog.Content className="flex w-full flex-col p-6">
                 <Dialog.Title className="hidden">{t("menu")}</Dialog.Title>
 
