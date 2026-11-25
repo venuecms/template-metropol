@@ -48,7 +48,7 @@ export async function SiteContent({
   return (
     <FullWidthLayout className="text-sm text-secondary">
       <VenueContent
-        className="flex max-w-2xl flex-col gap-6"
+        className="content-body flex max-w-2xl flex-col gap-6"
         content={siteContent}
         contentStyles={contentComponents}
         components={contentHandlers}

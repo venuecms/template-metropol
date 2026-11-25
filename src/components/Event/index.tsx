@@ -181,7 +181,7 @@ export const Event = ({
             <VenueContent
               // The opening paragraph a step up, as a lead-in to the rest. Its
               // selector outranks the text-xs each paragraph carries.
-              className="flex flex-col gap-6 text-xs [&>p:first-of-type]:text-sm"
+              className="content-body flex flex-col gap-6 text-xs [&>p:first-of-type]:text-sm"
               content={content}
               contentStyles={detailBodyComponents}
               components={contentHandlers}

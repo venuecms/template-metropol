@@ -282,3 +282,33 @@ html.darkGreyCM {
     padding-left: 1em;
   }
 }
+
+/* Rendered content bodies (VenueContent wrappers using contentComponents):
+   every prose block — headings, lists, quotes, images, embeds, link cards —
+   is held to the measure paragraphs already have (max-w-[72ch] in
+   renderedStyles), so nothing an author places runs wider than the text.
+
+   The measure is a registered <length> so its `ch` resolves once, at the
+   wrapper's text size (which is its paragraphs' size), rather than at each
+   block's own: a text-xl heading would otherwise get a far wider 72ch.
+
+   Paragraphs keep their own rule. Divs and navs are left alone: those are
+   listing blocks (event grids, product grids) and their pagers, which are
+   laid out as records rather than prose. min() keeps blocks inside a column
+   narrower than the measure; !important is needed because the SDK's embeds
+   set max-width inline. */
+@property --content-measure {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@layer components {
+  .content-body {
+    --content-measure: 72ch;
+  }
+
+  .content-body > :not(p, div, nav) {
+    max-width: min(100%, var(--content-measure)) !important;
+  }
+}

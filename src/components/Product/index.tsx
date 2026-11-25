@@ -76,7 +76,7 @@ export const Product = ({
 
       <ColumnRight className="max-w-4xl">
         <VenueContent
-          className="flex flex-col gap-6"
+          className="content-body flex flex-col gap-6 text-sm"
           content={content}
           contentStyles={contentComponents}
           components={contentHandlers}

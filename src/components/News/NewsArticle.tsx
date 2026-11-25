@@ -63,7 +63,7 @@ export const NewsArticle = async ({
         {date ? <div className="text-sm text-muted">{date}</div> : null}
         {article.image ? <VenueImage image={article.image} /> : null}
         <VenueContent
-          className="flex flex-col gap-6 text-sm"
+          className="content-body flex flex-col gap-6 text-sm"
           content={content}
           contentStyles={contentComponents}
           components={contentHandlers}

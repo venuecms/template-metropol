@@ -133,7 +133,7 @@ describe("PageListing", () => {
     const html = await renderListing({ layout: "events", content: body });
 
     expect(html).toContain(
-      '<span data-testid="body-class">flex flex-col gap-6 text-sm</span>',
+      '<span data-testid="body-class">content-body flex flex-col gap-6 text-sm</span>',
     );
   });
 
