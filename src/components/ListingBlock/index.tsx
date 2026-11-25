@@ -51,18 +51,30 @@ export const contentComponents: ContentEntries & AllListingComponents = {
 /**
  * `contentComponents` a step down, at text-xs, for the body of a record's own
  * page — an event's description, an artist's bio — set beside a large image.
- * The shared styles set text-sm on each paragraph, heading and link, so the
- * size has to change there rather than on the wrapper. Listing blocks pass
- * through untouched.
  */
-export const detailBodyComponents = Object.fromEntries(
-  Object.entries(contentComponents).map(([node, entry]) => [
-    node,
-    typeof entry === "string"
-      ? entry.replace(/\btext-sm\b/g, "text-xs")
-      : entry,
-  ]),
-) as typeof contentComponents;
+export const detailBodyComponents = resizedContentComponents("text-xs");
+
+/**
+ * `contentComponents` at the size of an h2 (text-xl), for the site's own text
+ * on the homepage, which reads as a statement rather than body copy.
+ */
+export const siteContentComponents = resizedContentComponents("text-xl");
+
+/**
+ * `contentComponents` with every text-sm swapped for another size. The shared
+ * styles set the size on each paragraph, heading and link, so it has to change
+ * there rather than on the wrapper. Listing blocks pass through untouched.
+ */
+function resizedContentComponents(size: string): typeof contentComponents {
+  return Object.fromEntries(
+    Object.entries(contentComponents).map(([node, entry]) => [
+      node,
+      typeof entry === "string"
+        ? entry.replace(/\btext-sm\b/g, size)
+        : entry,
+    ]),
+  ) as typeof contentComponents;
+}
 
 /**
  * `contentComponents` for the body of a page typed as an event listing: its
