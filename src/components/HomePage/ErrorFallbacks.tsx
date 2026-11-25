@@ -19,6 +19,10 @@ export function EventsError() {
   );
 }
 
+export function SiteContentError() {
+  return null; // The site text is optional, so hide on error
+}
+
 export function ProductsError() {
   return null; // Products are optional and site-specific, so hide on error
 }

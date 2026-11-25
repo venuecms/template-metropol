@@ -24,9 +24,9 @@ describe("buildTypeScaleCss", () => {
 
   describe("base size", () => {
     it.each([
-      ["Small", "clamp(0.9375rem, 0.8608rem + 0.3409vw, 1.125rem)"],
+      ["Small", "clamp(0.875rem, 0.8239rem + 0.2273vw, 1rem)"],
       ["Medium", "clamp(1rem, 0.8466rem + 0.6818vw, 1.375rem)"],
-      ["Large", "clamp(1.125rem, 0.9716rem + 0.6818vw, 1.5rem)"],
+      ["Large", "clamp(1.25rem, 1.1477rem + 0.4545vw, 1.5rem)"],
     ])("sets %s body text", (baseSize, size) => {
       // Major Third, so even Medium produces a stylesheet.
       expect(
@@ -105,7 +105,7 @@ describe("buildTypeScaleCss", () => {
           buildTypeScaleCss({ typeScale: "Compact", baseSize: "Large" }),
           "sm",
         ),
-      ).toBe("clamp(1.125rem, 0.9716rem + 0.6818vw, 1.5rem)");
+      ).toBe("clamp(1.25rem, 1.1477rem + 0.4545vw, 1.5rem)");
     });
   });
 });
