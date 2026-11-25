@@ -5,6 +5,7 @@ import { type SearchParams, getSite } from "@venuecms/sdk-next";
 import { EventsSection } from "@/components/HomePage/EventsSection";
 import { FeaturedEventsSection } from "@/components/HomePage/FeaturedEventsSection";
 import { ProductsSection } from "@/components/HomePage/ProductsSection";
+import { SiteContentSection } from "@/components/HomePage/SiteContentSection";
 import { setupSSR } from "@/components/utils";
 
 export const generateMetadata = async ({
@@ -38,7 +39,7 @@ const Home = async ({
   params: Promise<Params>;
   // Handed down unawaited: the site description can hold a listing block, and
   // its pager needs the URL. Awaiting here would pull the whole home page out
-  // of the prerendered shell, so the wait happens inside EventsSection's
+  // of the prerendered shell, so the wait happens inside SiteContentSection's
   // Suspense boundary instead.
   searchParams: Promise<SearchParams>;
 }) => {
@@ -48,8 +49,9 @@ const Home = async ({
   return (
     <>
       <FeaturedEventsSection locale={locale} />
-      <EventsSection locale={locale} searchParams={searchParams} />
+      <EventsSection />
       <ProductsSection />
+      <SiteContentSection locale={locale} searchParams={searchParams} />
     </>
   );
 };

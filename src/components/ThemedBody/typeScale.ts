@@ -41,12 +41,16 @@ const DEFAULT_RATIO = "augmented fourth";
  * Scales offered before the base size was a setting of its own, each with
  * the base it came with. A site that saved one keeps exactly its look; a base
  * size set alongside it still applies.
+ *
+ * Each base is given in px rather than by name, so a later change to the
+ * named sizes leaves these alone.
  */
-const LEGACY_SCALES: Record<string, { ratio: Range; base: string }> = {
-  default: { ratio: [1.414, 1.414], base: "medium" },
-  // The ratio opens up from 1.2 to 1.25 as the viewport widens.
-  compact: { ratio: [1.2, 1.25], base: "small" },
-  minimal: { ratio: [1.125, 1.125], base: "medium" },
+const LEGACY_SCALES: Record<string, { ratio: Range; base: Range }> = {
+  default: { ratio: [1.414, 1.414], base: [16, 22] },
+  // The ratio opens up from 1.2 to 1.25 as the viewport widens. Its base is
+  // the Small of the time, before Small became 14px → 16px.
+  compact: { ratio: [1.2, 1.25], base: [15, 18] },
+  minimal: { ratio: [1.125, 1.125], base: [16, 22] },
 };
 
 /** Each step and its distance from `sm`, the base. */
@@ -91,11 +95,14 @@ export const buildTypeScaleCss = (config: Record<string, unknown>) => {
     : (legacy?.ratio ?? [RATIOS[DEFAULT_RATIO], RATIOS[DEFAULT_RATIO]]);
 
   const baseKey = keyOf(config.baseSize);
-  const base = baseKey in BASE_SIZES ? baseKey : (legacy?.base ?? DEFAULT_BASE);
-  const [baseMinPx, baseMaxPx] = BASE_SIZES[base];
+  const [baseMinPx, baseMaxPx]: Range =
+    baseKey in BASE_SIZES
+      ? BASE_SIZES[baseKey]
+      : (legacy?.base ?? BASE_SIZES[DEFAULT_BASE]);
 
   const isTemplateDefault =
-    base === DEFAULT_BASE &&
+    baseMinPx === BASE_SIZES[DEFAULT_BASE][0] &&
+    baseMaxPx === BASE_SIZES[DEFAULT_BASE][1] &&
     ratioMin === RATIOS[DEFAULT_RATIO] &&
     ratioMax === RATIOS[DEFAULT_RATIO];
   if (isTemplateDefault) return null;

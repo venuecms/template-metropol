@@ -28,6 +28,19 @@ describe("templateConfigOf", () => {
     ).toMatchObject({ fontName: "Cardo", baseSize: "Large" });
   });
 
+  // `typography` was flattened to the top level; a site saved before then
+  // still has the group, and the form leaves it in place when it saves.
+  it("prefers a top-level typography setting over the retired group", () => {
+    expect(
+      templateConfigOf(
+        siteWith({
+          headingCase: "UPPERCASE",
+          typography: { headingCase: "As typed", fontName: "Cardo" },
+        }),
+      ),
+    ).toMatchObject({ headingCase: "UPPERCASE", fontName: "Cardo" });
+  });
+
   it("lifts the colors group too", () => {
     expect(
       templateConfigOf(siteWith({ colors: { colorPrimary: "#ff0000" } })),
