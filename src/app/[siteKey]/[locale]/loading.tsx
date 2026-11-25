@@ -2,6 +2,7 @@ import {
   EventsSkeleton,
   FeaturedEventsSkeleton,
   ProductsSkeleton,
+  SiteContentSkeleton,
 } from "@/components/HomePage/LoadingSkeletons";
 
 export default function Loading() {
@@ -9,6 +10,7 @@ export default function Loading() {
     <>
       <FeaturedEventsSkeleton />
       <EventsSkeleton />
+      <SiteContentSkeleton />
       <ProductsSkeleton />
     </>
   );
