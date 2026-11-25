@@ -134,6 +134,12 @@
           "description": "Used on listing images and homepage featured events. Leave empty to use the primary text color.",
           "title": "Duotone Tint Color"
         },
+        "showFeaturedOverlay": {
+          "type": "boolean",
+          "default": true,
+          "description": "Darkens homepage featured event images with a screen in the tint color, so the date and title read over them",
+          "title": "Featured Event Overlay"
+        },
         "showRelatedEvents": {
           "type": "boolean",
           "default": true,
