@@ -6,7 +6,7 @@ import {
   getSite,
 } from "@venuecms/sdk-next";
 
-import { contentComponents, contentHandlers } from "@/components/ListingBlock";
+import { contentHandlers, siteContentComponents } from "@/components/ListingBlock";
 import { FullWidthLayout } from "@/components/layout";
 
 /**
@@ -46,11 +46,11 @@ export async function SiteContent({
   }
 
   return (
-    <FullWidthLayout className="text-sm text-secondary">
+    <FullWidthLayout className="text-lg text-secondary">
       <VenueContent
-        className="flex max-w-2xl flex-col gap-6"
+        className="flex flex-col gap-6"
         content={siteContent}
-        contentStyles={contentComponents}
+        contentStyles={siteContentComponents}
         components={contentHandlers}
         searchParams={resolvedSearchParams}
       />
