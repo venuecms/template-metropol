@@ -15,13 +15,14 @@
         "custom",
         "Schibsted_Grotesk",
         "Hanken_Grotesk",
+        "Host_Grotesk",
         "jost",
         "IBM_Plex_Mono",
         "EB_Garamond",
         "Inter",
         "Open_Sans",
-        "Rethink_Sans",
-        "Cardo"
+        "Cardo",
+        "Atkinson_Hyperlegible_Next"
       ],
       "default": "jost",
       "title": "Font"
