@@ -1,14 +1,15 @@
 import { getSite } from "@venuecms/sdk-next";
 import { ThemeProvider } from "next-themes";
 import {
+  Atkinson_Hyperlegible_Next,
   Cardo,
   EB_Garamond,
   Hanken_Grotesk,
+  Host_Grotesk,
   IBM_Plex_Mono,
   Inter,
   Jost,
   Open_Sans,
-  Rethink_Sans,
   Schibsted_Grotesk,
 } from "next/font/google";
 import { ReactNode } from "react";
@@ -50,6 +51,12 @@ const HankenGrotesk = Hanken_Grotesk({
   display: "swap",
 });
 
+const HostGrotesk = Host_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "800"],
+  display: "swap",
+});
+
 const jost = Jost({
   subsets: ["latin"],
   display: "swap",
@@ -67,9 +74,14 @@ const OpenSans = Open_Sans({
   display: "swap",
 });
 
-const RethinkSans = Rethink_Sans({
+// Next's font metrics table has no entry for this family yet, so it can't
+// build a size-matched fallback and warns at build time; skip that step.
+const AtkinsonHyperlegibleNext = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
+  weight: ["500", "800"],
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["system-ui", "Arial", "sans-serif"],
 });
 
 const cardo = Cardo({
@@ -83,11 +95,12 @@ const ThemeFonts = {
   EB_Garamond: ebGaramond.style,
   Schibsted_Grotesk: SchibstedGrotesk.style,
   Hanken_Grotesk: HankenGrotesk.style,
+  Host_Grotesk: HostGrotesk.style,
   jost: jost.style,
   IBM_Plex_Mono: IBMPlexMono.style,
   Open_Sans: OpenSans.style,
-  Rethink_Sans: RethinkSans.style,
   Cardo: cardo.style,
+  Atkinson_Hyperlegible_Next: AtkinsonHyperlegibleNext.style,
   default: SchibstedGrotesk.style,
   custom: { fontFamily: "custom" },
 };
