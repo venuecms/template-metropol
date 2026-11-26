@@ -84,11 +84,11 @@ export async function RelatedForProduct({
 
   return (
     <section className="flex flex-col gap-6 pb-6 lg:pb-24">
-      <h2 className="text-md text-primary">{t("related_events")}</h2>
-      {/* The grid under an event: a step smaller, four across, events with
+      <h2 className="text-sm text-primary">{t("related_events")}</h2>
+      {/* The grid under an event: four across, events with
           4:3 images and products square, as they are in the shop. */}
       {rows.map((row, rowIndex) => (
-        <EventsList key={rowIndex} className="gap-y-4 text-xs lg:grid-cols-4">
+        <EventsList key={rowIndex} className="gap-y-4 text-sm lg:grid-cols-4">
           {row.map((record, index) => (
             <div
               key={keyOf(record)}
@@ -108,7 +108,13 @@ export async function RelatedForProduct({
                   locationToEvent
                 />
               ) : (
-                <ListProduct product={record.product} site={site} />
+                <ListProduct
+                  product={record.product}
+                  site={site}
+                  // The shop's cards space the title well off the image on a
+                  // phone; here it sits as close as an event's does.
+                  className="gap-0"
+                />
               )}
             </div>
           ))}
