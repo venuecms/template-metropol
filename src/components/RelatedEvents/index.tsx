@@ -14,6 +14,7 @@ import { EventsGrid } from "@/components/EventList";
 import { artistSlugsOf, rankRelatedEvents, tagFiltersOf } from "./related";
 
 export { rankRelatedEvents } from "./related";
+export { RelatedForProduct } from "./RelatedForProduct";
 
 /** How many related events the grid shows: one full row of four. */
 const LIMIT = 4;
@@ -87,13 +88,13 @@ export async function RelatedEvents({
 
   return (
     <section className="flex flex-col gap-6 pb-6 lg:pb-24">
-      <h2 className="text-md text-primary">{t("related_events")}</h2>
-      {/* A lighter take on the homepage grid: a step smaller, four across,
+      <h2 className="text-sm text-primary">{t("related_events")}</h2>
+      {/* A lighter take on the homepage grid: four across,
           with squarer 4:3 images. */}
       <EventsGrid
         events={related}
         site={site}
-        className="text-xs lg:grid-cols-4"
+        className="text-sm lg:grid-cols-4"
         imageAspect="classic"
       />
     </section>
