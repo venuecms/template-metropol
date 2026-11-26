@@ -74,10 +74,14 @@ const OpenSans = Open_Sans({
   display: "swap",
 });
 
+// Next's font metrics table has no entry for this family yet, so it can't
+// build a size-matched fallback and warns at build time; skip that step.
 const AtkinsonHyperlegibleNext = Atkinson_Hyperlegible_Next({
   subsets: ["latin"],
   weight: ["500", "800"],
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["system-ui", "Arial", "sans-serif"],
 });
 
 const cardo = Cardo({
