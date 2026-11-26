@@ -257,7 +257,7 @@ const stagger = (step: number) => ({ animationDelay: `${step * 80}ms` });
  * One of the facts under the image, led by the site's icon when it has one
  * (the Site Icon Style setting), in the Site Icon Color.
  */
-const Detail = ({
+export const Detail = ({
   icon,
   children,
 }: {
