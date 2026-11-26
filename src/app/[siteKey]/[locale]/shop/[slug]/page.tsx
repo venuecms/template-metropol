@@ -2,8 +2,13 @@ import { getGenerateMetadata } from "@/lib";
 import { Params } from "@/types";
 import { type SearchParams, getProduct, getSite } from "@venuecms/sdk-next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { Product } from "@/components/Product";
+import {
+  RelatedForProduct,
+  showsRelatedEvents,
+} from "@/components/RelatedEvents";
 import { setupSSR } from "@/components/utils";
 
 export const generateMetadata = getGenerateMetadata(getProduct);
@@ -30,7 +35,20 @@ const ProductPage = async ({
   }
 
   return (
-    <Product product={product} site={site} searchParams={await searchParams} />
+    <>
+      <Product
+        product={product}
+        site={site}
+        searchParams={await searchParams}
+      />
+      {showsRelatedEvents(site) ? (
+        // Its own boundary: the related grid reads the clock and fetches more
+        // records, and the product itself should not wait on either.
+        <Suspense fallback={null}>
+          <RelatedForProduct product={product} site={site} />
+        </Suspense>
+      ) : null}
+    </>
   );
 };
 

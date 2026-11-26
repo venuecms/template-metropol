@@ -1,7 +1,12 @@
-import type { Event } from "@venuecms/sdk-next";
+import type { Event, Product } from "@venuecms/sdk-next";
 import { describe, expect, it } from "vitest";
 
-import { rankRelatedEvents } from "./related";
+import {
+  type RelatedRecord,
+  rankRelatedEvents,
+  rankRelatedForProduct,
+  relatedRowsOf,
+} from "./related";
 
 const NOW = new Date("2026-06-01T12:00:00Z");
 
@@ -109,5 +114,113 @@ describe("rankRelatedEvents", () => {
     expect(
       rankRelatedEvents({ event: current, candidates, now: NOW, limit: 2 }),
     ).toHaveLength(2);
+  });
+});
+
+describe("rankRelatedForProduct", () => {
+  const product = (
+    slug: string,
+    { tags = [], artists = [] }: { tags?: unknown[]; artists?: string[] } = {},
+  ) =>
+    ({
+      slug,
+      tags,
+      artists: artists.map((s) => ({ profile: { slug: s } })),
+    }) as unknown as Product;
+
+  const current = product("current", {
+    tags: [tag("jazz")],
+    artists: ["ana"],
+  });
+
+  const keys = (records: RelatedRecord[]) =>
+    records.map((r) => (r.kind === "event" ? r.event.id : r.product.slug));
+
+  it("mixes events and products by score, events first on a tie", () => {
+    const related = rankRelatedForProduct({
+      product: current,
+      events: [
+        event({ id: "e-one", tags: [tag("jazz")] }),
+        event({ id: "e-two", tags: [tag("jazz")], artists: ["ana"] }),
+        event({
+          id: "e-past",
+          start: "2026-05-01T19:00:00Z",
+          tags: [tag("jazz")],
+        }),
+      ],
+      products: [
+        product("p-one", { artists: ["ana"] }),
+        product("p-none", { tags: [tag("film")] }),
+      ],
+      now: NOW,
+    });
+
+    expect(keys(related)).toEqual(["e-two", "e-one", "p-one"]);
+  });
+
+  it("drops the product itself and duplicates, and keeps to the limit", () => {
+    const related = rankRelatedForProduct({
+      product: current,
+      events: [],
+      products: [
+        product("current", { tags: [tag("jazz")] }),
+        product("a", { tags: [tag("jazz")] }),
+        product("a", { tags: [tag("jazz")] }),
+        product("b", { tags: [tag("jazz")] }),
+        product("c", { tags: [tag("jazz")] }),
+      ],
+      now: NOW,
+      limit: 2,
+    });
+
+    expect(keys(related)).toEqual(["a", "b"]);
+  });
+});
+
+describe("relatedRowsOf", () => {
+  const ev = (id: string): RelatedRecord => ({
+    kind: "event",
+    event: event({ id }),
+  });
+  const pr = (slug: string): RelatedRecord => ({
+    kind: "product",
+    product: { slug } as unknown as Product,
+  });
+  const keys = (rows: RelatedRecord[][]) =>
+    rows.map((row) =>
+      row.map((r) => (r.kind === "event" ? r.event.id : r.product.slug)),
+    );
+
+  it("keeps one mixed row while products fit in it", () => {
+    const related = [ev("e1"), pr("p1"), ev("e2"), pr("p2"), ev("e3")];
+
+    expect(keys(relatedRowsOf(related, 4))).toEqual([["e1", "p1", "e2", "p2"]]);
+  });
+
+  it("splits products above events when more than a row of products match", () => {
+    const related = [
+      ev("e1"),
+      pr("p1"),
+      pr("p2"),
+      pr("p3"),
+      pr("p4"),
+      pr("p5"),
+      ev("e2"),
+    ];
+
+    expect(keys(relatedRowsOf(related, 4))).toEqual([
+      ["p1", "p2", "p3", "p4"],
+      ["e1", "e2"],
+    ]);
+  });
+
+  it("leaves out an empty events row", () => {
+    const related = ["p1", "p2", "p3", "p4", "p5"].map(pr);
+
+    expect(keys(relatedRowsOf(related, 4))).toEqual([["p1", "p2", "p3", "p4"]]);
+  });
+
+  it("gives nothing for nothing", () => {
+    expect(relatedRowsOf([], 4)).toEqual([]);
   });
 });

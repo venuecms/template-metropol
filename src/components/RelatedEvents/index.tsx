@@ -14,6 +14,7 @@ import { EventsGrid } from "@/components/EventList";
 import { artistSlugsOf, rankRelatedEvents, tagFiltersOf } from "./related";
 
 export { rankRelatedEvents } from "./related";
+export { RelatedForProduct } from "./RelatedForProduct";
 
 /** How many related events the grid shows: one full row of four. */
 const LIMIT = 4;
