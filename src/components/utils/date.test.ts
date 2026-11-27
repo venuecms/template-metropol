@@ -44,6 +44,33 @@ describe("formatDate", () => {
       }),
     ).toBe("16. novembra 2026");
   });
+
+  it("abbreviates the weekday and month with a short template", () => {
+    const short = (locale?: string) =>
+      formatDate({
+        date: "2026-11-18T19:30:00+01:00",
+        timeZone,
+        withTime: false,
+        template: "EEE d MMM yyyy",
+        locale,
+      });
+
+    expect(short()).toBe("Wed 18 Nov 2026");
+    expect(short("sk")).toBe("st, 18. nov 2026");
+    expect(short("sv")).toBe("ons 18 nov. 2026");
+  });
+
+  it("abbreviates a range's months when the template does", () => {
+    const range = (start: string, end: string) =>
+      formatDateRange({ start, end, timeZone, template: "EEE d MMM yyyy" });
+
+    expect(
+      range("2026-11-30T19:00:00+01:00", "2026-12-02T19:00:00+01:00"),
+    ).toBe("30 Nov — 2 Dec 2026");
+    expect(
+      range("2026-11-16T19:00:00+01:00", "2026-11-18T19:00:00+01:00"),
+    ).toBe("16—18 Nov 2026");
+  });
 });
 
 describe("formatDateRange", () => {

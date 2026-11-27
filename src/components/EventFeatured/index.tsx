@@ -120,7 +120,7 @@ export const EventFeatured = ({
           <span className="text-sm">{label}</span>
           <h2
             className={cn(
-              "max-w-5xl text-balance text-xl lg:text-xxl",
+              "max-w-5xl text-xl lg:text-xxl",
               isCancelled && "line-through",
             )}
           >

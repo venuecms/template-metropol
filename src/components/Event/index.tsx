@@ -102,7 +102,7 @@ export const Event = ({
         <header className="flex flex-col gap-6 motion-safe:animate-slide-up lg:gap-10">
           <h1
             className={cn(
-              "text-balance text-xl text-primary",
+              "text-xl text-primary",
               isCancelled && "line-through",
             )}
           >

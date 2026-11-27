@@ -32,7 +32,7 @@ const dateLocales: Record<string, DateLocale> = {
   sk: {
     dateFnsLocale: sk,
     localizeTemplate: (template) =>
-      template.replace(/EEEE d\b/g, "EEEE, d").replace(/\bd\b/g, "d."),
+      template.replace(/(E{3,4}) d\b/g, "$1, d").replace(/\bd\b/g, "d."),
     time: "H:mm",
     clean: (formatted) => formatted,
     rangeDay: "d.",
@@ -175,6 +175,9 @@ export const formatDateRangeParts = ({
 
   const dateLocale = dateLocaleFor(locale);
   const options = { locale: dateLocale.dateFnsLocale };
+  // A range writes its months as the template does: `Nov` for `MMM`,
+  // `November` for `MMMM` or a template that names no month.
+  const month = /(?<!M)MMM(?!M)/.test(template) ? "MMM" : "MMMM";
 
   const isSameMonth =
     startDate.getMonth() === endDate.getMonth() &&
@@ -184,7 +187,7 @@ export const formatDateRangeParts = ({
     date: end,
     withTime: false,
     timeZone,
-    template: "d MMMM yyyy",
+    template: `d ${month} yyyy`,
     locale,
   });
 
@@ -197,7 +200,7 @@ export const formatDateRangeParts = ({
 
   const startLabel = format(
     startDate,
-    dateLocale.localizeTemplate("d MMMM"),
+    dateLocale.localizeTemplate(`d ${month}`),
     options,
   );
   return { date: `${startLabel} — ${endLabel}`, time: null };

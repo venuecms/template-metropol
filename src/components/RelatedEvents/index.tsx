@@ -11,7 +11,12 @@ import { templateConfigOf } from "@/lib/utils/templateConfig";
 
 import { EventsGrid } from "@/components/EventList";
 
-import { artistSlugsOf, rankRelatedEvents, tagFiltersOf } from "./related";
+import {
+  RELATED_DATE_TEMPLATE,
+  artistSlugsOf,
+  rankRelatedEvents,
+  tagFiltersOf,
+} from "./related";
 
 export { rankRelatedEvents } from "./related";
 export { RelatedForProduct } from "./RelatedForProduct";
@@ -96,6 +101,7 @@ export async function RelatedEvents({
         site={site}
         className="text-sm lg:grid-cols-4"
         imageAspect="classic"
+        dateTemplate={RELATED_DATE_TEMPLATE}
       />
     </section>
   );

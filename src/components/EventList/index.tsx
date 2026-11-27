@@ -39,12 +39,15 @@ export const EventsGrid = ({
   site,
   className,
   imageAspect,
+  dateTemplate,
 }: {
   events: Event[];
   site: Site;
   className?: string;
   /** The cards' image ratio; 16:9 unless given. */
   imageAspect?: VenueImageAspect;
+  /** The cards' date template; the listing default unless given. */
+  dateTemplate?: string;
 }) => (
   <EventsList className={cn("gap-y-4 lg:grid-cols-3", className)}>
     {events.map((event, index) => (
@@ -61,6 +64,7 @@ export const EventsGrid = ({
           withImage
           imageClassName="sm:w-full"
           imageAspect={imageAspect}
+          dateTemplate={dateTemplate}
           imageCredit={false}
           locationToEvent
           locationNameOnly
@@ -140,7 +144,7 @@ export const ListEvent = ({
         ) : null}
         <div
           className={cn(
-            "text-balance text-primary hover:brightness-150",
+            "text-primary hover:brightness-150",
             isCancelled && "line-through",
           )}
         >

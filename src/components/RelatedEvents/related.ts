@@ -205,3 +205,9 @@ export const relatedRowsOf = (
     (row) => row.length,
   );
 };
+
+/**
+ * The related grids' date: weekday and month abbreviated (`Wed 18 Nov 2026`),
+ * to fit four across.
+ */
+export const RELATED_DATE_TEMPLATE = "EEE d MMM yyyy";

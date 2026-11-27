@@ -13,6 +13,7 @@ import { EventsList, ListEvent } from "@/components/EventList";
 import { ListProduct } from "@/components/ListProduct";
 
 import {
+  RELATED_DATE_TEMPLATE,
   type RelatedRecord,
   artistSlugsOf,
   rankRelatedForProduct,
@@ -104,6 +105,7 @@ export async function RelatedForProduct({
                   withImage
                   imageClassName="sm:w-full"
                   imageAspect="classic"
+                  dateTemplate={RELATED_DATE_TEMPLATE}
                   imageCredit={false}
                   locationToEvent
                 />
