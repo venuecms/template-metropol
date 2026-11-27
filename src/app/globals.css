@@ -270,6 +270,12 @@ html.darkGreyCM {
    rules here: see buildTextCaseCss in ThemedBody. */
 
 @layer base {
+  /* Discretionary ligatures on top of the standard ones, wherever the site's
+     font has them; a font without any (`dlig`) is left as it is. */
+  body {
+    font-variant-ligatures: common-ligatures discretionary-ligatures;
+  }
+
   /* Quotes, from the editor's JSON (see proseHandlers) and from markdown
      alike. The rule takes the text's own color, so a quote reads the same on
      the page and in the footer's inverted colors. Its paragraphs are spaced
