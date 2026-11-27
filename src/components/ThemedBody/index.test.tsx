@@ -24,6 +24,7 @@ vi.mock("next/font/google", () => {
       "Inter",
       "Jost",
       "Open_Sans",
+      "Questrial",
       "Schibsted_Grotesk",
     ].map((name) => [name, font]),
   );
