@@ -26,7 +26,12 @@ import {
 import { VenueImage } from "@/components/VenueImage";
 
 import { TicketList } from "../TicketList";
-import { formatDate, formatDateRange, formatTime } from "../utils";
+import {
+  formatDate,
+  formatDateRange,
+  formatTime,
+  isMultiDayEvent,
+} from "../utils";
 import { SubEvents } from "./SubEvents";
 import { WhileUpcoming } from "./WhileUpcoming";
 
@@ -298,9 +303,10 @@ const EventLocation = ({ location }: { location: LocationSlim }) => {
 };
 
 /**
- * Start and end times. A single-day event gives times alone; one running over
- * several days puts each time with its date, since a bare end time would read
- * as the same evening.
+ * Start and end times. A single-day event gives times alone, as does a night
+ * running into the early morning (9pm to 3am); one running over several days
+ * puts each time with its date, since a bare end time would read as the same
+ * evening.
  */
 const EventTimes = ({
   start,
@@ -314,25 +320,10 @@ const EventTimes = ({
   const locale = useLocale();
   const t = useTranslations("events");
 
-  const sameDay =
-    !end ||
-    formatDate({
-      date: start,
-      withTime: false,
-      template: "yyyy-MM-dd",
-      timeZone,
-    }) ===
-      formatDate({
-        date: end,
-        withTime: false,
-        template: "yyyy-MM-dd",
-        timeZone,
-      });
-
   const label = (date: string) =>
-    sameDay
-      ? formatTime({ date, timeZone, locale })
-      : formatDate({ date, template: "d MMMM", timeZone, locale });
+    isMultiDayEvent({ start, end, timeZone })
+      ? formatDate({ date, template: "d MMMM", timeZone, locale })
+      : formatTime({ date, timeZone, locale });
 
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-2">
