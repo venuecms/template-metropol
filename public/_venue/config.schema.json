@@ -22,7 +22,8 @@
         "Inter",
         "Open_Sans",
         "Cardo",
-        "Atkinson_Hyperlegible_Next"
+        "Atkinson_Hyperlegible_Next",
+        "Questrial"
       ],
       "default": "jost",
       "title": "Font"

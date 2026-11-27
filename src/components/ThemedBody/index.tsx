@@ -10,6 +10,7 @@ import {
   Inter,
   Jost,
   Open_Sans,
+  Questrial,
   Schibsted_Grotesk,
 } from "next/font/google";
 import { ReactNode } from "react";
@@ -84,6 +85,13 @@ const AtkinsonHyperlegibleNext = Atkinson_Hyperlegible_Next({
   fallback: ["system-ui", "Arial", "sans-serif"],
 });
 
+// Questrial comes in a single weight, so bold text is synthesized by the browser.
+const questrial = Questrial({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
 const cardo = Cardo({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -101,6 +109,7 @@ const ThemeFonts = {
   Open_Sans: OpenSans.style,
   Cardo: cardo.style,
   Atkinson_Hyperlegible_Next: AtkinsonHyperlegibleNext.style,
+  Questrial: questrial.style,
   default: SchibstedGrotesk.style,
   custom: { fontFamily: "custom" },
 };
