@@ -5,6 +5,7 @@ import {
   formatDateRange,
   formatDateRangeParts,
   formatTime,
+  isMultiDayEvent,
   sameDayLabel,
 } from "./date";
 
@@ -154,6 +155,78 @@ describe("formatDateRangeParts", () => {
         withTime: true,
       }).time,
     ).toBeNull();
+  });
+
+  it("gives a night ending before 8am the next day a single date", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-27T21:00:00+01:00",
+        end: "2026-11-28T03:00:00+01:00",
+        timeZone,
+        withTime: true,
+      }),
+    ).toEqual({ date: "Friday 27 November 2026", time: "9pm" });
+  });
+
+  it("keeps an overnight event across a month end on a single date", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-30T22:00:00+01:00",
+        end: "2026-12-01T07:59:00+01:00",
+        timeZone,
+        withTime: false,
+      }).date,
+    ).toBe("Monday 30 November 2026");
+  });
+
+  it("treats an end at 8am the next day as a multi-day range", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-27T21:00:00+01:00",
+        end: "2026-11-28T08:00:00+01:00",
+        timeZone,
+        withTime: true,
+      }),
+    ).toEqual({ date: "27—28 November 2026", time: null });
+  });
+
+  it("treats an early end two days later as a multi-day range", () => {
+    expect(
+      formatDateRangeParts({
+        start: "2026-11-27T21:00:00+01:00",
+        end: "2026-11-29T03:00:00+01:00",
+        timeZone,
+        withTime: true,
+      }).time,
+    ).toBeNull();
+  });
+});
+
+describe("isMultiDayEvent", () => {
+  it("is false for an event with no end", () => {
+    expect(
+      isMultiDayEvent({ start: "2026-11-27T21:00:00+01:00", timeZone }),
+    ).toBe(false);
+  });
+
+  it("is false for a night ending before 8am the next day", () => {
+    expect(
+      isMultiDayEvent({
+        start: "2026-11-27T21:00:00+01:00",
+        end: "2026-11-28T03:00:00+01:00",
+        timeZone,
+      }),
+    ).toBe(false);
+  });
+
+  it("is true for an end at 8am the next day", () => {
+    expect(
+      isMultiDayEvent({
+        start: "2026-11-27T21:00:00+01:00",
+        end: "2026-11-28T08:00:00+01:00",
+        timeZone,
+      }),
+    ).toBe(true);
   });
 });
 

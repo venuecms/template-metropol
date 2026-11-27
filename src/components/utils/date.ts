@@ -87,8 +87,58 @@ export const formatDate = ({
 };
 
 /**
+ * The hour, in the venue's zone, before which an end on the morning after the
+ * start still belongs to the night before: a club night from 9pm to 3am is
+ * one date, not a two-day range.
+ */
+const OVERNIGHT_END_HOUR = 8;
+
+const isSameDay = (a: Date, b: Date) =>
+  a.getDate() === b.getDate() &&
+  a.getMonth() === b.getMonth() &&
+  a.getFullYear() === b.getFullYear();
+
+/**
+ * Whether an event ends on the calendar day after it starts, before
+ * {@link OVERNIGHT_END_HOUR}, so it reads as a single night.
+ */
+const endsOvernight = (startDate: TZDate, endDate: TZDate) => {
+  const dayAfterStart = new TZDate(startDate);
+  dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+
+  return (
+    isSameDay(dayAfterStart, endDate) &&
+    endDate.getHours() < OVERNIGHT_END_HOUR
+  );
+};
+
+/**
+ * Whether an event runs over more than one day in the venue's zone. One that
+ * runs past midnight into the early morning is a single night, not multi-day.
+ */
+export const isMultiDayEvent = ({
+  start,
+  end,
+  timeZone,
+}: {
+  start: string;
+  end?: string | null;
+  timeZone?: string;
+}) => {
+  if (!end) {
+    return false;
+  }
+
+  const startDate = new TZDate(start, timeZone);
+  const endDate = new TZDate(end, timeZone);
+
+  return !isSameDay(startDate, endDate) && !endsOvernight(startDate, endDate);
+};
+
+/**
  * A record's date and, when it has one, its start time, kept apart so a
  * listing can set the time off from the date. A multi-day range has no time.
+ * An event running past midnight into the early morning is not multi-day.
  */
 export const formatDateRangeParts = ({
   start,
@@ -108,10 +158,7 @@ export const formatDateRangeParts = ({
   const startDate = new TZDate(start, timeZone);
   const endDate = new TZDate(end, timeZone);
 
-  const isMultiDay =
-    startDate.getDate() !== endDate.getDate() ||
-    startDate.getMonth() !== endDate.getMonth() ||
-    startDate.getFullYear() !== endDate.getFullYear();
+  const isMultiDay = isMultiDayEvent({ start, end, timeZone });
 
   if (!isMultiDay) {
     return {

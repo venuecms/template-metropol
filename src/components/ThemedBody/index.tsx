@@ -47,7 +47,7 @@ const SchibstedGrotesk = Schibsted_Grotesk({
 
 const HankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "800"],
   display: "swap",
 });
 
