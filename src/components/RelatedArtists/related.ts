@@ -16,6 +16,9 @@ type Credited = {
 /** What a member's score is multiplied by; see `rankRelatedArtists`. */
 const MEMBER_BOOST = 1.5;
 
+/** The least score, member boost included, an artist needs to be shown. */
+const MIN_SCORE = 4;
+
 /** Points per shared product or tag; see `rankRelatedArtists`. */
 const POINTS = { product: 2, tag: 1 } as const;
 
@@ -24,10 +27,7 @@ const POINTS = { product: 2, tag: 1 } as const;
  * within `years` of now (upcoming ones included) it scores `points`. An event
  * past every band, or with no readable start date, scores `OLD_EVENT_POINTS`.
  */
-const EVENT_BANDS = [
-  { years: 3, points: 3 },
-  { years: 5, points: 2 },
-] as const;
+const EVENT_BANDS = [{ years: 6, points: 1.5 }] as const;
 const OLD_EVENT_POINTS = 1;
 
 const yearsBefore = (now: Date, years: number) => {
@@ -39,17 +39,21 @@ const yearsBefore = (now: Date, years: number) => {
 /**
  * The artists related to the one with `slug`, best match first.
  *
- * An artist scores, for each event they share with it, three points if it was in
- * the last three years (upcoming ones included), two if three to five years
- * ago, and one if older or undated; plus two for each shared product and one
- * for each tag. Working together says more than being filed under the same
- * tag, and working together lately says most. `tagMatches` holds one list per
+ * An artist scores, for each event they share with it, one and a half points
+ * if it was in the last six years (upcoming ones included) and one if older
+ * or undated; plus two for each shared product and one for each tag. Working
+ * together says more than being filed under the same tag, and working
+ * together lately says a little more again. `tagMatches` holds one list per
  * tag: the profiles carrying that tag.
  *
  * A member's score (slugs in `members`) is multiplied by `MEMBER_BOOST`, so a
  * member edges ahead of an equal match without leapfrogging a far stronger
  * one. Membership only weighs: an artist still has to share something to be
  * related at all.
+ *
+ * An artist scoring under `minScore` (`MIN_SCORE` unless given), after the
+ * member boost, is left out, so a single shared tag, product or bill is not
+ * enough on its own.
  *
  * A record or profile listed twice (it can come back from more than one read)
  * counts once, and the artist is never related to themselves. Ties keep the
@@ -62,6 +66,7 @@ export const rankRelatedArtists = ({
   tagMatches,
   members = new Set(),
   now = new Date(),
+  minScore = MIN_SCORE,
   limit,
 }: {
   slug: string;
@@ -71,6 +76,7 @@ export const rankRelatedArtists = ({
   /** Slugs of the site's member profiles. */
   members?: ReadonlySet<string>;
   now?: Date;
+  minScore?: number;
   limit?: number;
 }): RelatedProfile[] => {
   const scores = new Map<
@@ -143,6 +149,7 @@ export const rankRelatedArtists = ({
         ? entry.score * MEMBER_BOOST
         : entry.score,
     }))
+    .filter(({ score }) => score >= minScore)
     .sort((a, b) => b.score - a.score || a.order - b.order)
     .slice(0, limit)
     .map(({ profile }) => profile);
