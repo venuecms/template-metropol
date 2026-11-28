@@ -61,7 +61,7 @@ const rank = ({
   );
 
 describe("rankRelatedArtists", () => {
-  it("ranks by points: 1.5 per recent event, two per product, one per tag", () => {
+  it("ranks by points: 1.5 per recent event, three per product, one per tag", () => {
     expect(
       rank({
         events: [
@@ -74,12 +74,12 @@ describe("rankRelatedArtists", () => {
           ["c", "me"],
         ],
       }),
-      // c: a product and two tags (4). b: two events (3). a: one event (1.5).
+      // c: a product and two tags (5). b: two events (3). a: one event (1.5).
       // d: one tag (1).
     ).toEqual(["c", "b", "a", "d"]);
   });
 
-  it("weighs a recent event between one and two tags, a product as two", () => {
+  it("weighs a recent event between one and two tags, a product as three", () => {
     const tags = (count: number) => Array.from({ length: count }, () => ["t"]);
 
     expect(
@@ -89,7 +89,10 @@ describe("rankRelatedArtists", () => {
       rank({ events: [event("e1", ["me", "e"], MID)], tagMatches: tags(2) }),
     ).toEqual(["t", "e"]);
     expect(
-      rank({ products: [product("p1", ["me", "p"])], tagMatches: tags(3) }),
+      rank({ products: [product("p1", ["me", "p"])], tagMatches: tags(2) }),
+    ).toEqual(["p", "t"]);
+    expect(
+      rank({ products: [product("p1", ["me", "p"])], tagMatches: tags(4) }),
     ).toEqual(["t", "p"]);
   });
 
@@ -118,7 +121,7 @@ describe("rankRelatedArtists", () => {
         events: [event("e1", ["me", "a"], "")],
         products: [product("p1", ["me", "b"])],
       }),
-      // a: an undated event (1). b: a product (2).
+      // a: an undated event (1). b: a product (3).
     ).toEqual(["b", "a"]);
   });
 
@@ -134,7 +137,7 @@ describe("rankRelatedArtists", () => {
         tagMatches: [["pair", "m1"]],
         members: ["m1", "m2", "unrelated"],
       }),
-      // m1: a product and a tag, 3 × 1.5 (4.5). star: two recent events (3).
+      // m1: a product and a tag, 4 × 1.5 (6). star: two recent events (3).
       // pair: a recent event and a tag (2.5). m2: one recent event,
       // 1.5 × 1.5 (2.25).
     ).toEqual(["m1", "star", "pair", "m2"]);
@@ -178,11 +181,11 @@ describe("rankRelatedArtists", () => {
             event("e1", ["me", "strong", "short"]),
             event("e2", ["me", "strong", "short"]),
           ],
-          // strong: two recent events and a product (5). short: two recent
-          // events (3). member: a product and a tag, 3 × 1.5 (4.5). plain:
-          // the same product and tag, unboosted (3).
+          // strong: two recent events and a product (6). short: two recent
+          // events (3). member: a product, 3 × 1.5 (4.5). plain: the same
+          // product, unboosted (3).
           products: [product("p1", ["me", "strong", "member", "plain"])],
-          tagMatches: [[profile("member"), profile("plain")]],
+          tagMatches: [],
           members: new Set(["member"]),
           now: NOW,
         }),
