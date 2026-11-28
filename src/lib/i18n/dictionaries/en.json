@@ -31,7 +31,8 @@
   },
   "profiles": {
     "profiles": "Artists",
-    "no_profiles_found": "No artists found"
+    "no_profiles_found": "No artists found",
+    "related_artists": "Related artists"
   },
   "tickets": {
     "free": "free",
