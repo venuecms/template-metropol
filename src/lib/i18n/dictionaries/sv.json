@@ -31,7 +31,8 @@
   },
   "profiles": {
     "profiles": "Artister",
-    "no_profiles_found": "Inga artister hittades"
+    "no_profiles_found": "Inga artister hittades",
+    "related_artists": "Relaterade artister"
   },
   "tickets": {
     "free": "gratis",

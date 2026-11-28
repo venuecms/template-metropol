@@ -31,7 +31,8 @@
   },
   "profiles": {
     "profiles": "Umelci",
-    "no_profiles_found": "Nenašli sa žiadni umelci"
+    "no_profiles_found": "Nenašli sa žiadni umelci",
+    "related_artists": "Súvisiaci umelci"
   },
   "tickets": {
     "free": "zadarmo",
