@@ -20,6 +20,7 @@ import { EmailListSignupBlock } from "@/components/EmailSignup";
 import { proseHandlers } from "@/components/utils/handlers";
 import { renderedStyles } from "@/components/utils/styles";
 
+import { linkedContentImage } from "../Page/contentImage";
 import {
   EventGridListingBlock,
   EventListingBlock,
@@ -69,12 +70,30 @@ function resizedContentComponents(size: string): typeof contentComponents {
   return Object.fromEntries(
     Object.entries(contentComponents).map(([node, entry]) => [
       node,
-      typeof entry === "string"
-        ? entry.replace(/\btext-sm\b/g, size)
-        : entry,
+      typeof entry === "string" ? entry.replace(/\btext-sm\b/g, size) : entry,
     ]),
   ) as typeof contentComponents;
 }
+
+/**
+ * The 66-character measure as an image class. `ch` follows the element's own
+ * font size, so text-sm keeps it equal to a body paragraph's width; the
+ * min() keeps an image from overflowing a screen narrower than that.
+ */
+export const pageImageStyles = "max-w-[min(100%,66ch)] text-sm";
+
+/**
+ * `contentComponents` for a content page's own body, where
+ * h3s are set as large as h2s, and paragraphs and inline images are capped at
+ * 66 characters of body text.
+ */
+export const pageContentComponents: typeof contentComponents = {
+  ...contentComponents,
+  p: contentComponents.p?.replace(/max-w-\[72ch\]/g, "max-w-[66ch]"),
+  h3: contentComponents.h3?.replace(/\btext-sm\b/g, "text-xl"),
+  image: pageImageStyles,
+  img: pageImageStyles,
+};
 
 /**
  * `contentComponents` for the body of a page typed as an event listing: its
@@ -96,4 +115,13 @@ export const eventListPageComponents: ContentEntries & AllListingComponents = {
 export const contentHandlers: NodeHandlers = {
   ...proseHandlers,
   emailListSignup: EmailListSignupBlock,
+};
+
+/**
+ * `contentHandlers` for a content page's own body, where each image links to
+ * its full-resolution original in a new tab. Pairs with `pageContentComponents`.
+ */
+export const pageContentHandlers: NodeHandlers = {
+  ...contentHandlers,
+  image: linkedContentImage(pageImageStyles),
 };

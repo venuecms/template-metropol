@@ -34,6 +34,7 @@ export const VenueImage = ({
   props,
   filter = false,
   withCredit = true,
+  withCaption = false,
   holdFilter = false,
 }: {
   className?: string;
@@ -54,6 +55,11 @@ export const VenueImage = ({
    */
   withCredit?: boolean;
   /**
+   * Whether the image's caption is set below it, left-aligned and styled like
+   * the credit. Off by default; a record's own page turns it on.
+   */
+  withCaption?: boolean;
+  /**
    * Whether a filtered image keeps its duotone on hover. Off by default, so a
    * listing card fades to color under the pointer; an image with text over it
    * holds the tint the text was set against.
@@ -69,7 +75,9 @@ export const VenueImage = ({
     />
   );
 
-  return (
+  const caption = withCaption ? image?.caption?.trim() : undefined;
+
+  const credited = (
     <CreditWrapper credit={withCredit ? image?.credit : null}>
       {filter ? (
         // The filter's tint is a layer over the image, so it needs a box of
@@ -90,7 +98,21 @@ export const VenueImage = ({
       )}
     </CreditWrapper>
   );
+
+  return caption ? (
+    <figure className="flex flex-col gap-1">
+      {credited}
+      <figcaption className={cn(IMAGE_NOTE_CLASS, "text-start")}>
+        {caption}
+      </figcaption>
+    </figure>
+  ) : (
+    credited
+  );
 };
+
+/** The type the credit and caption share. */
+const IMAGE_NOTE_CLASS = "text-xs text-muted opacity-60";
 
 const CreditWrapper = ({
   children,
@@ -102,7 +124,9 @@ const CreditWrapper = ({
   credit ? (
     <div className="relative">
       {children}
-      <div className="absolute bottom--1 right-0 text-end text-xs text-muted opacity-60">
+      <div
+        className={cn(IMAGE_NOTE_CLASS, "absolute bottom--1 right-0 text-end")}
+      >
         {credit}
       </div>
     </div>

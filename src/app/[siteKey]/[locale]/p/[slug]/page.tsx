@@ -2,10 +2,8 @@ import { Page } from "@/components";
 import { getGenerateMetadata } from "@/lib";
 import { Params } from "@/types";
 import { type SearchParams, getLocalizedContent } from "@venuecms/sdk-next";
-import { getPage, getPages } from "@venuecms/sdk-next";
+import { getPage } from "@venuecms/sdk-next";
 import { notFound } from "next/navigation";
-
-import { PageWithParent } from "@/lib/utils/tree";
 
 import { PageListing } from "@/components/PageListing";
 import { setupSSR } from "@/components/utils";
@@ -33,14 +31,11 @@ const PagePage = async ({
 
   try {
     const { data: page } = await getPage({ slug });
-    const { data: pages } = await getPages();
 
     if (!page) {
       notFound();
     }
 
-    // Resolved before the `pages` guard: a listing draws from its own body, so
-    // an unreadable page tree is no reason to 404 it.
     const listingLayout = resolvePageListingLayout(page.type);
 
     if (listingLayout) {
@@ -57,18 +52,7 @@ const PagePage = async ({
       );
     }
 
-    // Only the page layout draws the subpage tree.
-    if (!pages) {
-      notFound();
-    }
-
-    return (
-      <Page
-        page={page}
-        pages={pages.records as Array<PageWithParent>}
-        searchParams={resolvedSearchParams}
-      />
-    );
+    return <Page page={page} searchParams={resolvedSearchParams} />;
   } catch (error) {
     console.error(error);
     notFound();

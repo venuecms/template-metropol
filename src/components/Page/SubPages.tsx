@@ -26,7 +26,7 @@ import { resolvePageHref } from "../utils/pageHref";
  * heading links there.
  *
  * Fetched one by one rather than read off the page list: the list is what the
- * nav and page tree draw from, and only the single-page read is sure to carry
+ * nav draws from, and only the single-page read is sure to carry
  * a body. Both reads are cached by the SDK.
  */
 export const SubPages = async ({

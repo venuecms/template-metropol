@@ -10,8 +10,6 @@ import type { Page as VenuePage } from "@venuecms/sdk-next";
  */
 const StaticRootSlugs = ["artists", "events", "archive", "shop"];
 
-// `type` and `parentId` are optional because the page tree reads its records
-// out of a loosely typed tree-view metadata bag.
 type PageLink = Pick<VenuePage, "slug"> & {
   type?: VenuePage["type"];
   parentId?: string | null;
@@ -21,7 +19,7 @@ type PageLink = Pick<VenuePage, "slug"> & {
 
 /**
  * Where a page record links, and whether it opens in a new tab. The single
- * resolver for page routing — the nav, the page tree and the page listing
+ * resolver for page routing — the nav, sub-pages and the page listing
  * block all render the same records and previously disagreed about reserved
  * slugs and about honouring `openInNewTab`.
  *

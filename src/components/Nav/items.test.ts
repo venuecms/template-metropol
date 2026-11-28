@@ -38,7 +38,7 @@ describe("buildNavItems", () => {
     expect(contact.children).toEqual([]);
   });
 
-  // The nav goes one level deep; anything below is the page tree's job.
+  // The nav goes one level deep; anything below is left out.
   it("stops at the first level of sub-pages", () => {
     const [about] = buildNavItems(pages, "en");
 

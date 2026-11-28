@@ -25,8 +25,7 @@ const toNavItem = (page: Page, locale: string, children: NavItem[]) => {
 
 /**
  * The root pages, in the order the CMS returns them, each with its direct
- * sub-pages. Deeper descendants are left to the page tree on the page itself,
- * where there is room for them.
+ * sub-pages. Deeper descendants are not shown in the nav.
  */
 export const buildNavItems = (pages: Page[], locale: string): NavItem[] =>
   pages

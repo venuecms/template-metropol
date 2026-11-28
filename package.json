@@ -24,7 +24,6 @@
     "next-intl": "^4.15.1",
     "next-themes": "^0.4.6",
     "react": "19.2.4",
-    "react-accessible-treeview": "^2.11.2",
     "react-dom": "19.2.4",
     "remove-markdown": "^0.6.4",
     "rss": "^1.2.2",
