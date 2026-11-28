@@ -5,9 +5,9 @@ import { buildTextCaseCss } from "./textCase";
 const HEADINGS = "h1, h2, h3, h4, h5, h6";
 
 describe("buildTextCaseCss", () => {
-  // A site that never saved the settings keeps the template's look.
-  it("puts paragraphs in capitals when nothing is set", () => {
-    expect(buildTextCaseCss({})).toBe("p { text-transform: uppercase; }");
+  // A site that never saved the settings gets the schema default: as typed.
+  it("adds nothing when nothing is set", () => {
+    expect(buildTextCaseCss({})).toBeNull();
   });
 
   it.each([
@@ -29,9 +29,9 @@ describe("buildTextCaseCss", () => {
   });
 
   it("falls back to the defaults for values it doesn't know", () => {
-    expect(buildTextCaseCss({ textCase: "title", textCaseScope: "some" })).toBe(
-      "p { text-transform: uppercase; }",
-    );
+    expect(
+      buildTextCaseCss({ textCase: "title", textCaseScope: "some" }),
+    ).toBeNull();
   });
 
   // The settings form shows enum values as they are, so the schema offers

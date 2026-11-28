@@ -5,7 +5,7 @@
     "themeId": {
       "type": "string",
       "enum": ["Default", "Dark", "Light"],
-      "default": "Default",
+      "default": "Dark",
       "title": "Theme"
     },
     "fontName": {
@@ -25,13 +25,13 @@
         "Atkinson_Hyperlegible_Next",
         "Questrial"
       ],
-      "default": "jost",
+      "default": "Questrial",
       "title": "Font"
     },
     "textCase": {
       "type": "string",
       "enum": ["As typed", "lowercase", "UPPERCASE"],
-      "default": "UPPERCASE",
+      "default": "As typed",
       "description": "Sets the letter case of your text, whatever case it was typed in. Only how it looks changes; the text itself is kept as typed.",
       "title": "Text Case"
     },
@@ -52,7 +52,7 @@
     "baseSize": {
       "type": "string",
       "enum": ["Small", "Medium", "Large"],
-      "default": "Medium",
+      "default": "Small",
       "description": "The size of your body text. Headings and titles grow from it by the Type Scale.",
       "title": "Base Font Size"
     },
@@ -65,7 +65,7 @@
         "Perfect Fourth",
         "Augmented Fourth"
       ],
-      "default": "Augmented Fourth",
+      "default": "Minor Third",
       "description": "How much bigger each text size is than the one below it.",
       "title": "Type Scale"
     },
@@ -133,13 +133,13 @@
           "type": "string",
           "format": "color",
           "pattern": "^$|^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-          "description": "Used on listing images and homepage featured events. Leave empty to use the primary text color.",
+          "description": "Used on listing images and homepage featured events. Leave empty for black at 50% opacity.",
           "title": "Duotone Tint Color"
         },
         "showFeaturedOverlay": {
           "type": "boolean",
           "default": true,
-          "description": "Darkens homepage featured event images with a screen in the tint color, so the date and title read over them",
+          "description": "Darkens homepage featured event images with a black screen at 50% opacity, so the date and title read over them",
           "title": "Featured Event Overlay"
         },
         "showRelatedEvents": {

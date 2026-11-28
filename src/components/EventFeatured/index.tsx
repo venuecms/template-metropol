@@ -105,13 +105,12 @@ export const EventFeatured = ({
             props={{ sizes: "100vw" }}
           />
         </div>
-        {/* A screen over the picture so the title reads against it, in the
-            same tint as the duotone. `--tint` carries its own alpha, so the
-            opacity goes on the layer instead of a `/70` modifier. */}
+        {/* A screen over the picture so the title reads against it: black
+            at 50%. */}
         {showOverlay ? (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-10 bg-tint opacity-70"
+            className="pointer-events-none absolute inset-0 z-10 bg-black/50"
           />
         ) : null}
         {/* Over the image, and above its duotone layer. A soft shadow in the tint keeps

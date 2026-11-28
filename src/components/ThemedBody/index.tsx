@@ -117,7 +117,7 @@ const ThemeFonts = {
 /**
  * The duotone image filter for listing images, on by default and switched off
  * by `imageDuotone: false` in the template config. It reaches only images
- * that opt in through VenueImage's `filter`: the cards in a listing. Each image goes grayscale, then a layer of the tint color (`--tint`, the primary color unless a site picks
+ * that opt in through VenueImage's `filter`: the cards in a listing. Each image goes grayscale, then a layer of the tint color (`--tint`, black at 50% unless a site picks
  * its own) is
  * screened over it: black takes the tint, white stays white, and
  * the grays between run from one to the other. Being CSS, it follows the
@@ -161,7 +161,7 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
   const fontName =
     typeof templateConfig.fontName === "string"
       ? templateConfig.fontName
-      : "default";
+      : "Questrial";
   const colorOverrideCss = buildThemeColorOverrideCss(templateConfig, themeId);
   // On unless a site switches it off: a site that never saved the setting has
   // no value for it, and the schema's default only reaches the settings form.
@@ -169,8 +169,10 @@ export const ThemedBody = async ({ children }: { children: ReactNode }) => {
   const textCaseCss = buildTextCaseCss(templateConfig);
   const typeScaleCss = buildTypeScaleCss(templateConfig);
   const logoScaleCss = buildLogoScaleCss(templateConfig);
+  // Unset or unknown takes Questrial, the schema default. The "default"
+  // option is a saved choice of its own: Schibsted Grotesk.
   const fontStyle =
-    ThemeFonts[fontName as keyof typeof ThemeFonts] ?? ThemeFonts.default;
+    ThemeFonts[fontName as keyof typeof ThemeFonts] ?? ThemeFonts.Questrial;
 
   return (
     <ThemeProvider attribute="class" forcedTheme={themeId}>
