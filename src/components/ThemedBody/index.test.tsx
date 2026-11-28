@@ -136,7 +136,7 @@ describe("ThemedBody", () => {
     expect(html).not.toContain("venue-image-duotone");
   });
 
-  it("tints images in the primary color when the duotone is on", async () => {
+  it("tints images in the tint color when the duotone is on", async () => {
     const html = await renderWithConfig({
       themeId: "space",
       imageDuotone: true,

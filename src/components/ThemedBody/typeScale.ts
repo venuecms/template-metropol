@@ -11,7 +11,8 @@
  * every `text-*` class in the template follows.
  *
  * Medium with Augmented Fourth is the scale in globals.css, so it adds
- * nothing; so does a site that never saved either setting.
+ * nothing. A site that never saved a setting gets the schema default for it:
+ * Small, and Minor Third.
  *
  * The settings form shows enum values as they are (it has no support for
  * enumNames), so the schema offers the names themselves; any case is
@@ -34,8 +35,13 @@ const RATIOS: Record<string, number> = {
   "augmented fourth": 1.414,
 };
 
-const DEFAULT_BASE = "medium";
-const DEFAULT_RATIO = "augmented fourth";
+/** Used when a setting is unset or unknown, as the schema defaults say. */
+const DEFAULT_BASE = "small";
+const DEFAULT_RATIO = "minor third";
+
+/** The scale globals.css already holds. */
+const TEMPLATE_BASE = "medium";
+const TEMPLATE_RATIO = "augmented fourth";
 
 /**
  * Scales offered before the base size was a setting of its own, each with
@@ -101,10 +107,10 @@ export const buildTypeScaleCss = (config: Record<string, unknown>) => {
       : (legacy?.base ?? BASE_SIZES[DEFAULT_BASE]);
 
   const isTemplateDefault =
-    baseMinPx === BASE_SIZES[DEFAULT_BASE][0] &&
-    baseMaxPx === BASE_SIZES[DEFAULT_BASE][1] &&
-    ratioMin === RATIOS[DEFAULT_RATIO] &&
-    ratioMax === RATIOS[DEFAULT_RATIO];
+    baseMinPx === BASE_SIZES[TEMPLATE_BASE][0] &&
+    baseMaxPx === BASE_SIZES[TEMPLATE_BASE][1] &&
+    ratioMin === RATIOS[TEMPLATE_RATIO] &&
+    ratioMax === RATIOS[TEMPLATE_RATIO];
   if (isTemplateDefault) return null;
 
   const declarations = STEPS.map(

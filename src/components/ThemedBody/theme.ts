@@ -15,6 +15,6 @@ const THEMES_BY_NAME: Record<string, string> = {
 
 export const themeIdOf = (config: Record<string, unknown>) => {
   const value = config.themeId;
-  if (typeof value !== "string" || !value) return "default";
+  if (typeof value !== "string" || !value) return "hundredK";
   return THEMES_BY_NAME[value] ?? value;
 };

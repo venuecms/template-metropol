@@ -10,8 +10,8 @@
  * support for enumNames). The CSS values `none` / `lowercase` / `uppercase`
  * and `paragraphs` / `all` are accepted too, as sites saved them before.
  *
- * Unset means the template's own look: paragraphs in capitals, headings left
- * to inherit. A site that never saved these settings looks as it always has.
+ * Unset means text as typed, as the schema defaults say: paragraphs left
+ * alone, headings left to inherit.
  */
 const TRANSFORMS: Record<string, string> = {
   none: "none",
@@ -40,7 +40,7 @@ const transformOf = (value: unknown) =>
  * element still wins over any of these rules, by specificity.
  */
 export const buildTextCaseCss = (config: Record<string, unknown>) => {
-  const transform = transformOf(config.textCase) ?? "uppercase";
+  const transform = transformOf(config.textCase) ?? "none";
   const scope =
     (typeof config.textCaseScope === "string" &&
       SCOPES[config.textCaseScope]) ||
