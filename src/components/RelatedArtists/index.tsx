@@ -35,15 +35,18 @@ const POOL = 100;
  */
 const MAX_MEMBER_PAGES = 5;
 
-/** The slugs of the site's member profiles, read a page at a time. */
+/**
+ * The slugs of the site's member profiles, read a page at a time. The API
+ * counts pages from 0.
+ */
 const memberSlugs = async (): Promise<Set<string>> => {
-  const first = await getProfiles({ type: "member", limit: POOL, page: 1 });
+  const first = await getProfiles({ type: "member", limit: POOL, page: 0 });
   const count = first.data?.count ?? 0;
   const pages = Math.min(Math.ceil(count / POOL), MAX_MEMBER_PAGES);
 
   const rest = await Promise.all(
     Array.from({ length: Math.max(pages - 1, 0) }, (_, index) =>
-      getProfiles({ type: "member", limit: POOL, page: index + 2 }),
+      getProfiles({ type: "member", limit: POOL, page: index + 1 }),
     ),
   );
 

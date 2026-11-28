@@ -20,7 +20,7 @@ const MEMBER_BOOST = 1.5;
 const MIN_SCORE = 4;
 
 /** Points per shared product or tag; see `rankRelatedArtists`. */
-const POINTS = { product: 2, tag: 1 } as const;
+const POINTS = { product: 3, tag: 1 } as const;
 
 /**
  * Points for a shared event by how long ago it started, newest band first:
@@ -41,7 +41,7 @@ const yearsBefore = (now: Date, years: number) => {
  *
  * An artist scores, for each event they share with it, one and a half points
  * if it was in the last six years (upcoming ones included) and one if older
- * or undated; plus two for each shared product and one for each tag. Working
+ * or undated; plus three for each shared product and one for each tag. Working
  * together says more than being filed under the same tag, and working
  * together lately says a little more again. `tagMatches` holds one list per
  * tag: the profiles carrying that tag.
