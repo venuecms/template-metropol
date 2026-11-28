@@ -9,7 +9,7 @@
  *
  * Only variables this template actually renders with belong here. `--overlay`
  * is deliberately absent: every theme declares it, but no component consumes
- * it (the hero overlay is a hardcoded color in FeaturedEventsContent), so a
+ * it (the hero and featured event overlays are hardcoded black at 50%), so a
  * picker for it would be a control that does nothing.
  */
 export const THEME_COLOR_VARIABLES = {
@@ -36,9 +36,8 @@ export type ThemeColorVariable = (typeof THEME_COLOR_VARIABLES)[ThemeColorKey];
  * So when a default-theme site overrides anything, the rest of the palette is
  * pinned to the light branch and the page stays coherent in both schemes.
  *
- * `--tint` is left out: it follows `--primary`, so pinning `--primary` pins
- * it too, and a fixed value here would stop it following a chosen primary.
- * `--icon` is left out as well: it is one fixed color in both schemes.
+ * `--tint` and `--icon` are left out: each is one fixed color in both
+ * schemes.
  *
  * `colors.test.ts` pins these values to globals.css so the two cannot drift.
  */

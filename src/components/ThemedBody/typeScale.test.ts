@@ -12,15 +12,21 @@ const minPxOf = (css: string | null, name: string) =>
 
 describe("buildTypeScaleCss", () => {
   // globals.css already holds Medium at Augmented Fourth.
-  it.each([
-    [{}],
-    [{ typeScale: "Augmented Fourth" }],
-    [{ baseSize: "Medium" }],
-    [{ typeScale: "Augmented Fourth", baseSize: "Medium" }],
-    [{ typeScale: "huge", baseSize: "enormous" }],
-  ])("adds nothing for %o", (config) => {
-    expect(buildTypeScaleCss(config)).toBeNull();
+  it("adds nothing for Medium at Augmented Fourth", () => {
+    expect(
+      buildTypeScaleCss({ typeScale: "Augmented Fourth", baseSize: "Medium" }),
+    ).toBeNull();
   });
+
+  // Unset or unknown settings take the schema defaults.
+  it.each([[{}], [{ typeScale: "huge", baseSize: "enormous" }]])(
+    "falls back to Small at Minor Third for %o",
+    (config) => {
+      expect(buildTypeScaleCss(config)).toBe(
+        buildTypeScaleCss({ typeScale: "Minor Third", baseSize: "Small" }),
+      );
+    },
+  );
 
   describe("base size", () => {
     it.each([
@@ -36,7 +42,7 @@ describe("buildTypeScaleCss", () => {
 
     it("keeps the default scale's ratio when only the base changes", () => {
       const css = buildTypeScaleCss({ baseSize: "Large" });
-      expect(minPxOf(css, "md") / minPxOf(css, "sm")).toBeCloseTo(1.414, 3);
+      expect(minPxOf(css, "md") / minPxOf(css, "sm")).toBeCloseTo(1.2, 3);
     });
   });
 
@@ -54,10 +60,10 @@ describe("buildTypeScaleCss", () => {
       );
     });
 
-    it("keeps the Medium base when only the scale changes", () => {
+    it("keeps the Small base when only the scale changes", () => {
       expect(
-        sizeOf(buildTypeScaleCss({ typeScale: "Minor Third" }), "sm"),
-      ).toBe("clamp(1rem, 0.8466rem + 0.6818vw, 1.375rem)");
+        sizeOf(buildTypeScaleCss({ typeScale: "Major Third" }), "sm"),
+      ).toBe("clamp(0.875rem, 0.8239rem + 0.2273vw, 1rem)");
     });
 
     it("accepts any case", () => {

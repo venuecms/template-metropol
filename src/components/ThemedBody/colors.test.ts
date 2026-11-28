@@ -278,8 +278,10 @@ describe("the config schema and the theme variables", () => {
     for (const variable of Object.values(THEME_COLOR_VARIABLES)) {
       // A word character before the dash, so this matches the Tailwind
       // utility (`bg-background`) and not the `--background` declaration in
-      // the map above, which is in this same directory.
-      const utility = new RegExp(`\\w-${variable.slice(2)}\\b`);
+      // the map above, which is in this same directory. A `var(--tint)` in
+      // generated CSS or an arbitrary value counts too.
+      const name = variable.slice(2);
+      const utility = new RegExp(`\\w-${name}\\b|var\\(--${name}\\)`);
 
       expect(componentSource).toMatch(utility);
     }

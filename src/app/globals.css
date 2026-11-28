@@ -9,9 +9,9 @@ html {
   --muted: 120, 4%, 33%, 0.8;
 
   /* Image tint: the duotone over listing images and the screen over a
-     featured event. Follows the theme's --primary (and any override of it)
-     unless a site picks its own; no theme declares it. */
-  --tint: var(--primary);
+     featured event. Black at 50% unless a site picks its own; no theme
+     declares it. */
+  --tint: 0, 0%, 0%, 0.5;
 
   /* Site icon: the marker before an event's details (SiteIcon). #FF4646 in
      every theme unless a site picks its own; no theme declares it. */

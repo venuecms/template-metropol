@@ -20,9 +20,9 @@ describe("themeIdOf", () => {
   );
 
   it.each([[{}], [{ themeId: "" }], [{ themeId: 3 }]])(
-    "falls back to default for %o",
+    "falls back to the dark theme for %o",
     (config) => {
-      expect(themeIdOf(config)).toBe("default");
+      expect(themeIdOf(config)).toBe("hundredK");
     },
   );
 });
