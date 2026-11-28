@@ -31,7 +31,8 @@
   },
   "profiles": {
     "profiles": "Kunstnere",
-    "no_profiles_found": "Ingen kunstnere fundet"
+    "no_profiles_found": "Ingen kunstnere fundet",
+    "related_artists": "Relaterede kunstnere"
   },
   "tickets": {
     "free": "gratis",

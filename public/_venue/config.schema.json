@@ -146,6 +146,19 @@
           "type": "boolean",
           "default": true,
           "title": "Show Related Events"
+        },
+        "showRelatedArtists": {
+          "type": "boolean",
+          "default": true,
+          "description": "Lists artists who share events, products or tags at the bottom of each artist page",
+          "title": "Show Related Artists"
+        },
+        "relatedArtistsCount": {
+          "type": "integer",
+          "enum": [5, 10, 15],
+          "default": 10,
+          "description": "How many related artists each artist page shows",
+          "title": "Related Artists Count"
         }
       }
     },
