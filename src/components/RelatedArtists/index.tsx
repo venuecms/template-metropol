@@ -12,6 +12,7 @@ import { templateConfigOf } from "@/lib/utils/templateConfig";
 
 import { ProfilesGrid } from "@/components/ProfilesGrid";
 import { tagFiltersOf } from "@/components/RelatedEvents/related";
+import { RevealOnScroll } from "@/components/utils/RevealOnScroll";
 
 import { rankRelatedArtists } from "./related";
 
@@ -124,9 +125,12 @@ export async function RelatedArtists({
   const t = await getTranslations("profiles");
 
   return (
-    <section className="flex flex-col gap-6 pb-6 lg:pb-24">
-      <h2 className="text-sm text-primary">{t("related_artists")}</h2>
-      <ProfilesGrid profiles={related} className="text-sm" />
-    </section>
+    // Slides into place when scrolled to, its cards filling in after.
+    <RevealOnScroll>
+      <section className="flex flex-col gap-6 pb-6 lg:pb-24">
+        <h2 className="text-sm text-primary">{t("related_artists")}</h2>
+        <ProfilesGrid profiles={related} className="text-sm" />
+      </section>
+    </RevealOnScroll>
   );
 }
